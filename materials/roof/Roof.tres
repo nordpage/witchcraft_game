@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" load_steps=4 format=3 uid="uid://poybkiqxbawm"]
+
+[ext_resource type="Texture2D" uid="uid://bpybltb85dftj" path="res://materials/roof/TCom_BronzeRoofFlat2_1K_albedo.png" id="1_q0fu5"]
+[ext_resource type="Texture2D" uid="uid://b5k11n0715u4s" path="res://materials/roof/TCom_BronzeRoofFlat2_1K_height.png" id="2_18eq4"]
+[ext_resource type="Texture2D" uid="uid://cfi6ucqjqgj8l" path="res://materials/roof/TCom_BronzeRoofFlat2_1K_normal.png" id="3_mbtif"]
+
+[resource]
+albedo_texture = ExtResource("1_q0fu5")
+normal_enabled = true
+normal_texture = ExtResource("3_mbtif")
+heightmap_enabled = true
+heightmap_texture = ExtResource("2_18eq4")

@@ -1,0 +1,20 @@
+[gd_resource type="StandardMaterial3D" load_steps=7 format=3 uid="uid://12bxhtg1mqah"]
+
+[ext_resource type="Texture2D" uid="uid://b3e55rpayfqtg" path="res://materials/metal/TCom_MedievalMetal3_1K_albedo.png" id="1_sdn6w"]
+[ext_resource type="Texture2D" uid="uid://c42m6tvr814kc" path="res://materials/metal/TCom_MedievalMetal3_1K_ao.png" id="2_vjoik"]
+[ext_resource type="Texture2D" uid="uid://b5gilj8lrx0sv" path="res://materials/metal/TCom_MedievalMetal3_1K_height.png" id="3_gq1qb"]
+[ext_resource type="Texture2D" uid="uid://ch4ye8ifyywff" path="res://materials/metal/TCom_MedievalMetal3_1K_metallic.png" id="4_u32r0"]
+[ext_resource type="Texture2D" uid="uid://c06plaemrlg78" path="res://materials/metal/TCom_MedievalMetal3_1K_normal.png" id="5_qes2a"]
+[ext_resource type="Texture2D" uid="uid://bxntkmg1k2ro4" path="res://materials/metal/TCom_MedievalMetal3_1K_roughness.png" id="6_uqk5r"]
+
+[resource]
+albedo_texture = ExtResource("1_sdn6w")
+metallic = 1.0
+metallic_texture = ExtResource("4_u32r0")
+roughness_texture = ExtResource("6_uqk5r")
+normal_enabled = true
+normal_texture = ExtResource("5_qes2a")
+ao_enabled = true
+ao_texture = ExtResource("2_vjoik")
+heightmap_enabled = true
+heightmap_texture = ExtResource("3_gq1qb")

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cfk5ehcpdmuu3"]
+
+[ext_resource type="Script" uid="uid://c85lw35r27t3c" path="res://Scripts/DayNightCycle.gd" id="1_obajk"]
+
+[node name="DayNightCycle" type="Node3D"]
+script = ExtResource("1_obajk")

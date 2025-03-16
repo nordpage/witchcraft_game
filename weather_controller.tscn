@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://b3vtftvwyo7kf"]
+
+[ext_resource type="Script" uid="uid://ph6lhfkad3wc" path="res://Scripts/weather_controller.gd" id="1_s5umo"]
+[ext_resource type="PackedScene" uid="uid://2hfnetgvt1n2" path="res://rain_particles.tscn" id="2_drqsj"]
+
+[node name="WeatherController" type="Node3D"]
+script = ExtResource("1_s5umo")
+
+[node name="RainParticles" parent="." instance=ExtResource("2_drqsj")]
