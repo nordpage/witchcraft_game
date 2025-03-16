@@ -1,6 +1,6 @@
 extends Node
 
-signal resource_changed(resource_name: String, new_value: float)
+signal resource_changed(resource_name: String, new_value: int)
 
 # Здесь можно разделить ресурсы по категориям, либо хранить все в одном словаре.
 # Пример: "materials" – сырье, "items" – собранные или созданные предметы, "stats" – состояние игры.

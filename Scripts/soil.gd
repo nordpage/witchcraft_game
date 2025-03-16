@@ -73,7 +73,7 @@ func water():
 		soil_parameters.is_watered = true
 		water_material(soil_parameters.is_watered)
 		stop_drying()
-		ResourceManager.add_resource("witch_fatigue", 0.1)
+		WitchFatigue.add_fatigue(0.1)
 	else:
 		print("Garden bed already watered!")
 		
@@ -83,7 +83,7 @@ func plant():
 		if ResourceManager.remove_resource("seeds", 1):
 			soil_parameters.is_sown = true
 			print("Planting... waiting for growth")
-			ResourceManager.add_resource("witch_fatigue", 0.1)
+			WitchFatigue.add_fatigue(0.1)
 			grow_plant_after_delay()
 		else:
 			print("Not enough seeds!")
@@ -94,7 +94,7 @@ func grow_plant_after_delay() -> void:
 	var growth_modifier = 1.0
 	
 	# Проверяем погоду через singleton WeatherController
-	var weather_controller = get_node("/root/WeatherController")
+	var weather_controller = $"../../../../WeatherController"
 	if weather_controller and weather_controller.current_weather == weather_controller.WeatherType.RAIN:
 		growth_modifier = 0.7  # Быстрее растет во время дождя
 	
@@ -143,10 +143,17 @@ func harvest():
 			soil_parameters.is_sown = false
 			soil_parameters.has_plant = false
 			print("Plant harvested!")
-			# Сбрасываем состояние полива при сборе урожая
-			stop_drying()
-			soil_parameters.is_watered = false
-			water_material(soil_parameters.is_watered)
+			
+			# Проверяем текущую погоду перед сбросом полива
+			var weather_controller = $"../../../../WeatherController"
+			var is_raining = weather_controller and weather_controller.current_weather == weather_controller.WeatherType.RAIN
+			
+			# Если не идет дождь, только тогда сбрасываем состояние полива
+			if not is_raining:
+				stop_drying()
+				soil_parameters.is_watered = false
+				water_material(false)
+			
 			ResourceManager.add_resource("witch_fatigue", 0.1)
 			ResourceManager.add_resource("plants", 1)
 			return
