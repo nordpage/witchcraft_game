@@ -83,6 +83,7 @@ func plant():
 		if ResourceManager.remove_resource("seeds", 1):
 			soil_parameters.is_sown = true
 			print("Planting... waiting for growth")
+			ResourceManager.add_resource("witch_fatigue", 0.1)
 			grow_plant_after_delay()
 		else:
 			print("Not enough seeds!")
@@ -146,6 +147,7 @@ func harvest():
 			stop_drying()
 			soil_parameters.is_watered = false
 			water_material(soil_parameters.is_watered)
+			ResourceManager.add_resource("witch_fatigue", 0.1)
 			ResourceManager.add_resource("plants", 1)
 			return
 	print("No plant to harvest!")
