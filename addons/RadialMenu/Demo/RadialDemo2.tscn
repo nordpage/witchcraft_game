@@ -8,4 +8,5 @@
 script = ExtResource("2")
 
 [node name="RadialMenu" parent="." instance=ExtResource("2_royl4")]
+custom_minimum_size = Vector2(300, 222.263)
 default_theme = ExtResource("3_icj7k")
