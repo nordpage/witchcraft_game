@@ -42,6 +42,14 @@ func _ready():
 	cart_material.bounce = 0.1
 	physics_material_override = cart_material
 
+	for child in get_parent().get_children():
+		if child.name.begins_with("Wheel"):
+			child.set_collision_layer_value(1, false)  # Колёса не сталкиваются с тележкой
+			child.set_collision_mask_value(1, false)
+
+	# Смещаем центр масс вниз (делаем тележку устойчивее)
+	set_center_of_mass(Vector3(0, -2, 0))
+
 	# Настраиваем задние шарниры
 	setup_rear_hinges()
 
@@ -67,11 +75,9 @@ func _physics_process(delta):
 # Настройка задних шарниров
 func setup_rear_hinges():
 	if hinge_bl and hinge_br:
-		# Задаем фиксированные ограничения для задних колес (только вращение)
-		set_hinge_angle(hinge_bl, 0)  # Фиксируем в прямом положении
-		set_hinge_angle(hinge_br, 0)  # Фиксируем в прямом положении
+		hinge_bl.set("axis", Vector3(0,1,0))  # Задаём ось вращения
+		hinge_br.set("axis", Vector3(0,1,0))  # Задаём ось вращения
 
-		# Дополнительные настройки для стабильности
 		hinge_bl.set_param(HingeJoint3D.PARAM_BIAS, 0.9)
 		hinge_br.set_param(HingeJoint3D.PARAM_BIAS, 0.9)
 
@@ -81,14 +87,9 @@ func apply_motor_forces():
 		# Вычисляем силу на основе ввода
 		var drive_force = speed_input * engine_force
 
-		# Распределяем силу между колесами
-		var wheel_force = drive_force / 4.0
-
-		# Применяем силу к каждому колесу
-		apply_wheel_force(wheel_fl, wheel_force)
-		apply_wheel_force(wheel_fr, wheel_force)
-		apply_wheel_force(wheel_bl, wheel_force)
-		apply_wheel_force(wheel_br, wheel_force)
+		# Применяем силу **только к задним колёсам**
+		apply_wheel_force(wheel_bl, drive_force)
+		apply_wheel_force(wheel_br, drive_force)
 
 # Применяем силу к отдельному колесу
 func apply_wheel_force(wheel: RigidBody3D, force: float):
@@ -102,12 +103,23 @@ func apply_wheel_force(wheel: RigidBody3D, force: float):
 # Обрабатываем рулевое управление
 func handle_steering():
 	if hinge_fl and hinge_fr:
-		# Вычисляем угол на основе ввода
 		var steer_angle = steering_input * steering_angle
 
-		# Применяем к передним шарнирам
-		set_hinge_angle(hinge_fl, steer_angle)
-		set_hinge_angle(hinge_fr, steer_angle)
+		hinge_fl.set_param(HingeJoint3D.PARAM_LIMIT_LOWER, steer_angle - 0.1)  # Даем запас
+		hinge_fl.set_param(HingeJoint3D.PARAM_LIMIT_UPPER, steer_angle + 0.1)
+
+		hinge_fr.set_param(HingeJoint3D.PARAM_LIMIT_LOWER, steer_angle - 0.1)
+		hinge_fr.set_param(HingeJoint3D.PARAM_LIMIT_UPPER, steer_angle + 0.1)
+
+		hinge_fl.set_flag(HingeJoint3D.FLAG_USE_LIMIT, true)
+		hinge_fr.set_flag(HingeJoint3D.FLAG_USE_LIMIT, true)
+
+		# Включаем мотор для передних колёс
+		hinge_fl.set_param(HingeJoint3D.PARAM_MOTOR_TARGET_VELOCITY, steer_angle * 2)
+		hinge_fr.set_param(HingeJoint3D.PARAM_MOTOR_TARGET_VELOCITY, steer_angle * 2)
+
+		hinge_fl.set_flag(HingeJoint3D.FLAG_ENABLE_MOTOR, true)
+		hinge_fr.set_flag(HingeJoint3D.FLAG_ENABLE_MOTOR, true)
 
 # Устанавливаем угол шарнира
 func set_hinge_angle(hinge: HingeJoint3D, angle: float):
