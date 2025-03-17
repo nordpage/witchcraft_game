@@ -27,6 +27,8 @@ signal is_moving(state)
 func _ready():
 	# Настройка физики тележки
 	add_to_group("cart")
+	axis_lock_angular_x = true
+	axis_lock_angular_z = true
 
 	# Настраиваем физические параметры
 	mass = 200.0
