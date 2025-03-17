@@ -1,97 +1,88 @@
-# SpeedController.gd - прикрепите к 2D элементу в вашем UI
+# CartSliderController.gd
 extends Control
 
 @export var cart_path: NodePath  # Путь к узлу тележки
 @export var max_speed: float = 5.0  # Максимальная скорость
 @export var turn_speed: float = 2.0  # Скорость поворота
-@export var acceleration: float = 3.0  # Ускорение
-@export var deceleration: float = 5.0  # Торможение
+@export var acceleration_force: float = 20.0  # Сила ускорения
+@export var turn_force: float = 30.0  # Сила поворота
 
 @onready var cart = get_node_or_null(cart_path)
-
-var is_dragging: bool = false
-var slider_value: float = 0.0  # От -1 до 1
-var drag_start_pos: Vector2
-var drag_current_offset: Vector2
-var slider_height: float 
-
-# Визуальные компоненты - добавьте их как дочерние узлы в редакторе
-@onready var slider_background = $SliderBackground
-@onready var slider_handle = $SliderHandle
-@onready var slider_marker = $CenterMarker
-
-signal speed_changed(value)
+@onready var speed_slider = $SpeedSlider  # VSlider для скорости
+@onready var turn_slider = $TurnSlider    # HSlider для поворота
 
 func _ready():
-	slider_height = size.y - slider_handle.size.y
-	# Центрируем маркер по вертикали, если он есть
-	if slider_marker:
-		slider_marker.position.y = size.y / 2 - slider_marker.size.y / 2
+	# Настраиваем слайдеры
+	if speed_slider:
+		# Настраиваем диапазон от -1 до 1 (назад-стоп-вперед)
+		speed_slider.min_value = -1.0
+		speed_slider.max_value = 1.0
+		speed_slider.value = 0.0
+		
+		# Настраиваем внешний вид скорости
+		speed_slider.step = 0.1  # Шаги по 0.1
+		
+		# Подключаем сигнал изменения
+		speed_slider.connect("value_changed", Callable(self, "_on_speed_changed"))
+		# НЕ устанавливаем автовозврат в центр для SpeedSlider
 	
-	# Инициализируем положение ручки слайдера в центре (нулевая скорость)
-	reset_slider()
+	if turn_slider:
+		# Настраиваем диапазон от -1 до 1 (влево-прямо-вправо)
+		turn_slider.min_value = -1.0
+		turn_slider.max_value = 1.0
+		turn_slider.value = 0.0
+		
+		# Настраиваем внешний вид поворота
+		turn_slider.step = 0.1  # Шаги по 0.1
+		
+		# Подключаем сигнал изменения
+		turn_slider.connect("value_changed", Callable(self, "_on_turn_changed"))
+		# Настраиваем автовозврат в центр только для слайдера поворота
+		turn_slider.connect("drag_ended", Callable(self, "_on_turn_drag_ended"))
 
-func _gui_input(event):
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		if event.pressed:
-			# Начинаем перетаскивание
-			is_dragging = true
-			drag_start_pos = event.position
-			# Если кликнули не на ручку, сразу перемещаем её к позиции клика
-			if slider_handle:
-				var target_y = clamp(event.position.y - slider_handle.size.y / 2, 0, slider_height)
-				slider_handle.position.y = target_y
-				update_slider_value()
-		else:
-			# Заканчиваем перетаскивание и возвращаем ручку в центр
-			is_dragging = false
-			reset_slider()
-	
-	if event is InputEventMouseMotion and is_dragging:
-		# Перемещаем ручку слайдера
-		if slider_handle:
-			var target_y = clamp(event.position.y - slider_handle.size.y / 2, 0, slider_height)
-			slider_handle.position.y = target_y
-			update_slider_value()
+func _on_speed_changed(value):
+	# Обработчик изменения скорости
+	if value == 0.0:
+		# Останавливаем анимацию, если скорость равна нулю
+		var animation_player = cart.get_node_or_null("AnimationPlayer")
+		if animation_player and animation_player.is_playing():
+			animation_player.stop()
 
-func update_slider_value():
-	# Преобразуем положение ручки в значение слайдера от -1 до 1
-	# Верх = -1 (полный вперед), центр = 0 (стоп), низ = 1 (полный назад)
-	var normalized_pos = slider_handle.position.y / slider_height
-	slider_value = (normalized_pos * 2 - 1) * -1  # Инвертируем, чтобы вверх был "вперед"
-	
-	emit_signal("speed_changed", slider_value)
+func _on_turn_changed(value):
+	# Обработчик изменения поворота
+	pass
 
-func reset_slider():
-	if slider_handle:
-		# Возвращаем ручку в центральное положение (нулевая скорость)
-		slider_handle.position.y = slider_height / 2
-		slider_value = 0.0
-		emit_signal("speed_changed", slider_value)
+func _on_turn_drag_ended(value_changed):
+	# Возвращаем слайдер поворота в центр при отпускании
+	turn_slider.value = 0.0
 
-func _process(delta):
+func _physics_process(delta):
 	if cart:
-		# Применяем изменение скорости к тележке
-		var target_speed = max_speed * slider_value
-		var current_speed = cart.velocity.length() * sign(cart.velocity.dot(-cart.transform.basis.z))
-		var new_speed = lerp(current_speed, target_speed, 
-							acceleration * delta if abs(target_speed) > abs(current_speed) 
-							else deceleration * delta)
+		# Направление вперед по оси X
+		var forward_dir = cart.transform.basis.x  # Используем X вместо -Z
 		
-		# Устанавливаем скорость тележки
-		cart.velocity = -cart.transform.basis.z * new_speed
+		# УПРАВЛЕНИЕ ДВИЖЕНИЕМ ВПЕРЕД/НАЗАД (speed_slider)
+		var forward_force = forward_dir * (speed_slider.value * max_speed * acceleration_force)
+		cart.apply_central_force(forward_force)
 		
-		# Обновляем анимацию, если она есть
+		# УПРАВЛЕНИЕ ПОВОРОТОМ (turn_slider)
+		if cart.linear_velocity.length() > 0.5:  # Поворачиваем только если движемся
+			# Используем поворот вокруг оси Y
+			var torque = Vector3(0, -turn_slider.value * turn_speed * turn_force, 0)
+			cart.apply_torque(torque)
+		
+		# Обновляем анимацию
 		var animation_player = cart.get_node_or_null("AnimationPlayer")
 		if animation_player:
-			if abs(new_speed) > 0.1:
-				if animation_player.has_animation("move") and not animation_player.is_playing():
-					animation_player.play("move")
-			else:
+			var current_speed = cart.linear_velocity.length()
+			if current_speed > 0.5 and speed_slider.value != 0.0:
+				if animation_player.has_animation("moving") and not animation_player.is_playing():
+					animation_player.play("moving")
+			elif current_speed < 0.1 or speed_slider.value == 0.0:
 				if animation_player.is_playing():
 					animation_player.stop()
 		
-		# Увеличиваем усталость при движении
-		if abs(new_speed) > 0.1:
-			var fatigue_amount = delta * 0.01 * abs(new_speed) / max_speed
+		# Добавляем усталость при движении
+		if cart.linear_velocity.length() > 0.5:
+			var fatigue_amount = delta * 0.01 * cart.linear_velocity.length() / max_speed
 			WitchFatigue.add_fatigue(fatigue_amount)

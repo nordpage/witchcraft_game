@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 ResourceManager="*res://Scripts/ResourceManager.gd"
 WitchFatigue="*res://Scripts/WitchFatigue.gd"
+PotionSystem="*res://Scripts/PotionSystem.gd"
 
 [editor_plugins]
 
