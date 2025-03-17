@@ -50,7 +50,7 @@ func _on_close_button_pressed():
 
 func _on_potion_brewed(potion_type, potion_name):
 	# Отображаем результат
-	result_label.text = "Приготовлено: " + potion_name
+	result_label.text = "Prepared:\n" + potion_name
 	result_label.visible = true
 	
 	# Скрываем метку через 3 секунды
@@ -69,9 +69,9 @@ func _update_buttons(resource_name="", value=0):
 		energy_button.disabled = !potion_system.can_brew_potion(potion_system.PotionType.ENERGY)
 		
 		# Обновляем текст на кнопках, показывая необходимые ингредиенты
-		update_button_text(growth_button, potion_system.PotionType.GROWTH, "Эликсир Роста")
-		update_button_text(weather_button, potion_system.PotionType.WEATHER, "Зелье Погоды")
-		update_button_text(energy_button, potion_system.PotionType.ENERGY, "Восстанавливающая Настойка")
+		update_button_text(growth_button, potion_system.PotionType.GROWTH, "Elixir of Growth")
+		update_button_text(weather_button, potion_system.PotionType.WEATHER, "Weather Potion")
+		update_button_text(energy_button, potion_system.PotionType.ENERGY, "Restorative Tincture")
 
 func update_button_text(button, potion_type, base_name):
 	var recipe = potion_system.recipes[potion_type]
@@ -80,7 +80,7 @@ func update_button_text(button, potion_type, base_name):
 	for ingredient in recipe:
 		var required = recipe[ingredient]
 		var available = ResourceManager.get_resource(ingredient)
-		text += ingredient + ": " + str(available) + "/" + str(required) + "\n"
+		text += ingredient + ": " + str(int(available)) + "/" + str(required) + "\n"
 	
 	button.text = text
 

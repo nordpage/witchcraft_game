@@ -1,3 +1,6 @@
+StaticBody3D
+OmniLight3D
+HTerrain
 Button
 Label
 VBoxContainer
@@ -9,6 +12,3 @@ VSlider
 Node3D
 ProgressBar
 CanvasLayer
-GPUParticles3D
-StaticBody3D
-CollisionShape3D

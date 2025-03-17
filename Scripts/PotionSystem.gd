@@ -18,9 +18,9 @@ var recipes = {
 
 # Названия зелий
 var potion_names = {
-	PotionType.GROWTH: "Эликсир Роста",
-	PotionType.WEATHER: "Зелье Погоды",
-	PotionType.ENERGY: "Восстанавливающая Настойка"
+	PotionType.GROWTH: "Elixir of Growth",
+	PotionType.WEATHER: "Weather Potion",
+	PotionType.ENERGY: "Restorative Tincture"
 }
 
 # Проверяет доступность зелья

@@ -1,5 +1,10 @@
-res://Scripts
 res://
+res://materials/glass
+res://UI
+res://textures
+res://textures/grass
+res://TerrainData
+res://Scripts
 res://models/plants/plant1
 res://materials/metal
 C:/Program Files/Blender Foundation/Blender 4.3

@@ -8,7 +8,7 @@ var resources = {
 	# Материалы
 	"firewood": 10,    # Дрова
 	"seeds": 50,      # Зерно
-	"plants": 0,       # Растения (например, выращенные на огороде)
+	"plants": 2,       # Растения (например, выращенные на огороде)
 	
 	# Предметы
 	"potions": 2,      # Зелья
@@ -34,7 +34,7 @@ func remove_resource(resource_name: String, amount: float) -> bool:
 	if resources.has(resource_name) and resources[resource_name] >= amount:
 		resources[resource_name] -= amount
 		emit_signal("resource_changed", resource_name, resources[resource_name])
-		print(resource_name, "removed:", amount, "Total:", resources[resource_name])
+		#print(resource_name, "removed:", amount, "Total:", resources[resource_name])
 		return true
 	return false
 

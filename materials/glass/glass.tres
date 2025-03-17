@@ -1,0 +1,22 @@
+[gd_resource type="StandardMaterial3D" load_steps=7 format=3 uid="uid://bxrx1roijdujo"]
+
+[ext_resource type="Texture2D" uid="uid://dqqc8sbt0k0tb" path="res://materials/glass/TCom_GlassRandomDiscs_1K_albedo_1.png" id="1_d3ah0"]
+[ext_resource type="Texture2D" uid="uid://ba1sf0qgym1ow" path="res://materials/glass/TCom_GlassRandomDiscs_1K_ao.png" id="2_dumno"]
+[ext_resource type="Texture2D" uid="uid://bcm5ntmpjvcy8" path="res://materials/glass/TCom_GlassRandomDiscs_1K_height_1.png" id="3_mo3vd"]
+[ext_resource type="Texture2D" uid="uid://c26giav3i3uu1" path="res://materials/glass/TCom_GlassRandomDiscs_1K_metallic.png" id="4_5oi7d"]
+[ext_resource type="Texture2D" uid="uid://b5v5nl8jjbcp6" path="res://materials/glass/TCom_GlassRandomDiscs_1K_normal.png" id="5_73jx0"]
+[ext_resource type="Texture2D" uid="uid://j4wn2wso3ss6" path="res://materials/glass/TCom_GlassRandomDiscs_1K_roughness.png" id="6_5cwg8"]
+
+[resource]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0.509804)
+albedo_texture = ExtResource("1_d3ah0")
+metallic = 1.0
+metallic_texture = ExtResource("4_5oi7d")
+roughness_texture = ExtResource("6_5cwg8")
+normal_enabled = true
+normal_texture = ExtResource("5_73jx0")
+ao_enabled = true
+ao_texture = ExtResource("2_dumno")
+heightmap_enabled = true
+heightmap_texture = ExtResource("3_mo3vd")
