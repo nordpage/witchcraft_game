@@ -1,3 +1,5 @@
+CollisionShape3D
+CollisionPolygon3D
 StaticBody3D
 OmniLight3D
 HTerrain
@@ -10,5 +12,3 @@ HSlider
 Control
 VSlider
 Node3D
-ProgressBar
-CanvasLayer

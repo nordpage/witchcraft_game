@@ -1,4 +1,4 @@
-res://soil.tscn
+res://main.tscn
 res://materials/outer/outer.tres
 res://materials/roof/Roof.tres
 res://materials/metal/metal.tres
@@ -7,12 +7,9 @@ res://addons/RadialMenu/light_default_theme.tres
 res://models/plants/plant1/plant1.tres
 res://materials/glass/glass.tres
 res://button_normal.tres
-res://main.tscn
+res://soil.tscn
 res://addons/RadialMenu/Demo/RadialDemo2.tscn
 res://day_night_cycle.tscn
 res://weather_controller.tscn
 res://rain_particles.tscn
 res://plant_scene.tscn
-res://TerrainData/height.res
-res://TerrainData/data.hterrain
-res://Scripts/ResourceManager.gd

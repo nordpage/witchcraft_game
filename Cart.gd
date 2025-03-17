@@ -9,8 +9,17 @@ signal is_moving(state)
 var target_speed: float = 0.0
 
 func _ready():
-	var lever = get_node("Lever")
-	lever.connect("lever_changed", Callable(self, "_on_lever_changed"))
+	gravity_scale = 1.0  # Нормальная гравитация
+	mass = 20.0  # Достаточно тяжелая для стабильности
+	linear_damp = 0.3  # Уменьшаем скольжение
+	angular_damp = 2.0  # Уменьшаем раскачивание
+	can_sleep = true
+	contact_monitor = true
+	max_contacts_reported = 4
+	continuous_cd = true  # Предотвращает проваливание на высоких скоростях
+	
+	# Добавляем тележку в группу для обнаружения коллизий
+	add_to_group("cart")
 
 func _on_lever_changed(value: float) -> void:
 	# Если дров достаточно, рассчитываем целевую скорость.

@@ -92,7 +92,7 @@ func set_weather(weather: int, with_transition: bool = true) -> void:
 				if rain_particles:
 					rain_particles.visible = false
 				disable_volumetric_fog()
-			print("Weather set to CLEAR (sunny)")
+			#print("Weather set to CLEAR (sunny)")
 			
 			# Если был дождь, запускаем высыхание для всех грядок с задержкой
 			if old_weather == WeatherType.RAIN:
@@ -107,7 +107,7 @@ func set_weather(weather: int, with_transition: bool = true) -> void:
 				if rain_particles:
 					rain_particles.visible = true
 				disable_volumetric_fog()
-			print("Weather set to RAIN")
+			#print("Weather set to RAIN")
 			
 			# Поливаем все грядки, когда начинается дождь
 			water_all_soil()
@@ -130,7 +130,7 @@ func set_weather(weather: int, with_transition: bool = true) -> void:
 				if rain_particles:
 					rain_particles.visible = false
 				enable_volumetric_fog()
-			print("Weather set to FOG (volumetric fog)")
+			#print("Weather set to FOG (volumetric fog)")
 	
 	# Отправляем сигнал о смене погоды
 	emit_signal("weather_changed", weather)
