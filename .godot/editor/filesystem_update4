@@ -16,3 +16,5 @@ res://Scripts/weather_controller.gd
 res://Scripts/HUD.gd
 res://Scripts/WitchFatigue.gd
 res://Scripts/ResourceManager.gd
+res://Scripts/CartController.gd
+res://Scripts/SpeedController.gd

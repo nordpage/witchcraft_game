@@ -14,28 +14,36 @@ func _ready():
 	_update_resource_ui("witch_fatigue", ResourceManager.get_resource("witch_fatigue"))
 
 func _process(delta):
-	# Добавляем проверку здесь, чтобы гарантировать обновление UI даже при малых изменениях
-	_update_resource_ui("witch_fatigue", ResourceManager.get_resource("witch_fatigue"))
+	# Обновляем индикатор усталости каждый кадр для плавности
+	_update_fatigue_ui(ResourceManager.get_resource("witch_fatigue"))
 
-func _on_resource_changed(resource_name: String, new_value: int) -> void:
+func _on_resource_changed(resource_name: String, new_value) -> void:
 	_update_resource_ui(resource_name, new_value)
 		
-func _update_resource_ui(resource_name: String, new_value: int) -> void:
+func _update_resource_ui(resource_name: String, new_value) -> void:
 	match resource_name:
 		"firewood":
-			FirewoodLabel.text = "Firewood: " + str(new_value)
+			FirewoodLabel.text = "Firewood: " + str(int(new_value))
 		"seeds":
-			SeedLabel.text = "Seeds: " + str(new_value)
+			SeedLabel.text = "Seeds: " + str(int(new_value))
 		"plants":
-			PlantsLabel.text = "Plants: " + str(new_value)
+			PlantsLabel.text = "Plants: " + str(int(new_value))
 		"witch_fatigue":
-			FatigueBar.value = new_value
-			# Меняем цвет индикатора усталости в зависимости от значения
-			if new_value > 0.7:
-				FatigueBar.modulate = Color(1.0, 0.3, 0.3)  # Красный
-			elif new_value > 0.4:
-				FatigueBar.modulate = Color(1.0, 0.8, 0.2)  # Желтый
-			else:
-				FatigueBar.modulate = Color(0.2, 0.8, 0.2)  # Зеленый
+			_update_fatigue_ui(new_value)
 		_:
 			pass  # Можно добавить обработку других ресурсов
+
+# Отдельная функция для обновления интерфейса усталости
+func _update_fatigue_ui(fatigue_value: float) -> void:
+	# Проверяем, существует ли индикатор усталости
+	if FatigueBar:
+		# Устанавливаем значение индикатора (ProgressBar принимает float)
+		FatigueBar.value = fatigue_value
+		
+		# Меняем цвет индикатора усталости в зависимости от значения
+		if fatigue_value > 0.7:
+			FatigueBar.modulate = Color(1.0, 0.3, 0.3)  # Красный
+		elif fatigue_value > 0.4:
+			FatigueBar.modulate = Color(1.0, 0.8, 0.2)  # Желтый
+		else:
+			FatigueBar.modulate = Color(0.2, 0.8, 0.2)  # Зеленый
