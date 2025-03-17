@@ -27,12 +27,12 @@ func _input(event):
 			is_touching = event.pressed
 			if is_touching:
 				last_touch_position = event.position
-	
+
 	# Обработка перемещения пальца по тачпаду
 	if event is InputEventMouseMotion and is_touching:
 		# Разница между текущим и предыдущим положением курсора
 		var motion = event.position - last_touch_position
-		
+
 		# Движение вперед/назад определяется по вертикальному движению
 		if abs(motion.y) > abs(motion.x):
 			# Движение вверх - вперед, вниз - назад
@@ -41,7 +41,7 @@ func _input(event):
 		else:
 			# Движение влево/вправо для поворота
 			rotate_y(-motion.x * rotation_speed * 0.01)
-		
+
 		# Обновляем последнее известное положение
 		last_touch_position = event.position
 
@@ -49,7 +49,7 @@ func _physics_process(delta):
 	# Если не касаемся тачпада, постепенно замедляемся
 	if !is_touching:
 		velocity = velocity.lerp(Vector3.ZERO, deceleration * delta)
-	
+
 	# Управление анимацией
 	if velocity.length() > 0.1:
 		if animation_player and animation_player.has_animation("move"):
@@ -58,17 +58,17 @@ func _physics_process(delta):
 	else:
 		if animation_player and animation_player.is_playing():
 			animation_player.stop()
-	
+
 	# Выполняем перемещение
 	move_and_slide()
-	
+
 	# Обновляем статус движения
 	var was_moving = moving
 	moving = velocity.length() > 0.1
-	
+
 	if was_moving != moving:
 		emit_signal("is_moving", moving)
-	
+
 	# Если движемся, увеличиваем усталость
 	if moving:
 		var fatigue_amount = delta * 0.01 * velocity.length() / max_speed

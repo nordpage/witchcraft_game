@@ -18,13 +18,13 @@ func _ready():
 	if soil_parameters:
 		soil_parameters = soil_parameters.duplicate() as SoilData
 	add_to_group("soil")
-	
+
 	drying_timer = Timer.new()
 	drying_timer.one_shot = true
 	drying_timer.wait_time = drying_time
 	drying_timer.connect("timeout", Callable(self, "_on_drying_timer_timeout"))
 	add_child(drying_timer)
-	
+
 	# Захватываем точную копию текущего материала
 	if body.get_surface_override_material(0) != null:
 		original_material = body.get_surface_override_material(0)
@@ -36,7 +36,7 @@ func _ready():
 		new_mat.albedo_color = Color(0.55, 0.27, 0.07, 1)
 		original_material = new_mat
 		body.material_override = original_material
-	
+
 	# Создаем "мокрый" материал на основе оригинального
 	wet_material = StandardMaterial3D.new()
 	if original_material is StandardMaterial3D:
@@ -67,7 +67,7 @@ func _input_event(camera: Camera3D, event: InputEvent, click_position: Vector3, 
 	if event is InputEventMouseButton and event.button_index == 2 and event.pressed:
 		print("Soil clicked!")
 		emit_signal("soil_clicked", self, event.position)
-		
+
 func water():
 	if not soil_parameters.is_watered:
 		soil_parameters.is_watered = true
@@ -76,7 +76,7 @@ func water():
 		WitchFatigue.add_fatigue(0.1)
 	else:
 		print("Garden bed already watered!")
-		
+
 func plant():
 	if not soil_parameters.is_sown:
 		# Проверяем, есть ли семена
@@ -89,44 +89,44 @@ func plant():
 			print("Not enough seeds!")
 	else:
 		print("Garden bed is already planted!")
-		
+
 func grow_plant_after_delay() -> void:
 	var growth_modifier = 1.0
-	
+
 	# Проверяем погоду через singleton WeatherController
 	var weather_controller = $"../../../../WeatherController"
 	if weather_controller and weather_controller.current_weather == weather_controller.WeatherType.RAIN:
 		growth_modifier = 0.7  # Быстрее растет во время дождя
-	
+
 	# Модифицированное время роста
 	var modified_time = growth_time * growth_modifier
 	await get_tree().create_timer(modified_time).timeout
 	grow_plant()
-	
+
 func grow_plant() -> void:
 	if plant_scene:
 		# Базовый шанс на успешный рост
 		var growth_chance = 0.8
-		
+
 		# Увеличиваем шанс, если грядка полита
 		if soil_parameters.is_watered:
 			growth_chance += 0.15
-		
+
 		# Проверяем успешность роста
 		if randf() <= growth_chance:
 			var plant_instance = plant_scene.instantiate()
 			plant_instance.name = "Plant"
 			body.add_child(plant_instance)
-			
+
 			# Получаем размер меша почвы для правильного позиционирования
 			var soil_aabb = body.get_aabb()
 			# Размещаем растение на поверхности почвы
 			plant_instance.position = Vector3(0, soil_aabb.size.y / 2, 0)
-			
+
 			# Убедимся, что растение видно
 			if plant_instance.has_method("set_visible"):
 				plant_instance.visible = true
-				
+
 			print("Plant has grown! Global position: ", plant_instance.global_position)
 			soil_parameters.has_plant = true
 		else:
@@ -134,7 +134,7 @@ func grow_plant() -> void:
 			soil_parameters.is_sown = false
 	else:
 		print("No plant scene assigned!")
-		
+
 func harvest():
 	# Ищем дочерний узел с именем "Plant" среди дочерних элементов body
 	for child in body.get_children():
@@ -143,22 +143,22 @@ func harvest():
 			soil_parameters.is_sown = false
 			soil_parameters.has_plant = false
 			print("Plant harvested!")
-			
+
 			# Проверяем текущую погоду перед сбросом полива
 			var weather_controller = $"../../../../WeatherController"
 			var is_raining = weather_controller and weather_controller.current_weather == weather_controller.WeatherType.RAIN
-			
+
 			# Если не идет дождь, только тогда сбрасываем состояние полива
 			if not is_raining:
 				stop_drying()
 				soil_parameters.is_watered = false
 				water_material(false)
-			
+
 			ResourceManager.add_resource("witch_fatigue", 0.1)
 			ResourceManager.add_resource("plants", 1)
 			return
 	print("No plant to harvest!")
-	
+
 func water_material(watered: bool):
 	if watered:
 		# Применяем материал для политой почвы
@@ -166,20 +166,20 @@ func water_material(watered: bool):
 	else:
 		# Возвращаем оригинальный материал
 		body.material_override = original_material
-	
+
 	soil_parameters.is_watered = watered
-	
+
 func _process(delta: float) -> void:
 	# Если таймер активен, обновляем визуальный прогресс высыхания
 	if drying_timer.is_stopped() == false && soil_parameters.is_watered:
 		drying_progress = 1.0 - (drying_timer.time_left / drying_timer.wait_time)
 		update_drying_visual()
-			
+
 func update_drying_visual() -> void:
 	if soil_parameters.is_watered:
 		# Постепенно изменяем цвет от мокрого к сухому
 		var current_color = wet_material.albedo_color.lerp(
-			original_material.albedo_color if original_material is StandardMaterial3D else Color(0.55, 0.27, 0.07, 1), 
+			original_material.albedo_color if original_material is StandardMaterial3D else Color(0.55, 0.27, 0.07, 1),
 			drying_progress
 		)
 		body.material_override.albedo_color = current_color

@@ -27,7 +27,7 @@ var potion_names = {
 func can_brew_potion(potion_type: int) -> bool:
 	if !recipes.has(potion_type):
 		return false
-		
+
 	var recipe = recipes[potion_type]
 	for ingredient in recipe:
 		if ResourceManager.get_resource(ingredient) < recipe[ingredient]:
@@ -38,11 +38,11 @@ func can_brew_potion(potion_type: int) -> bool:
 func brew_potion(potion_type: int) -> bool:
 	if !can_brew_potion(potion_type):
 		return false
-		
+
 	var recipe = recipes[potion_type]
 	for ingredient in recipe:
 		ResourceManager.remove_resource(ingredient, recipe[ingredient])
-		
+
 	ResourceManager.add_resource("potion_" + str(potion_type), 1)
 	emit_signal("potion_brewed", potion_type, potion_names[potion_type])
 	return true
@@ -51,9 +51,9 @@ func brew_potion(potion_type: int) -> bool:
 func use_potion(potion_type: int) -> bool:
 	if ResourceManager.get_resource("potion_" + str(potion_type)) <= 0:
 		return false
-		
+
 	ResourceManager.remove_resource("potion_" + str(potion_type), 1)
-	
+
 	match potion_type:
 		PotionType.GROWTH:
 			apply_growth_effect()
@@ -61,7 +61,7 @@ func use_potion(potion_type: int) -> bool:
 			apply_weather_effect()
 		PotionType.ENERGY:
 			apply_energy_effect()
-	
+
 	return true
 
 func apply_growth_effect():
@@ -72,7 +72,7 @@ func apply_growth_effect():
 
 func apply_weather_effect():
 	# Меняет погоду на случайную
-	var weather_controller = get_node_or_null("/root/WeatherController") 
+	var weather_controller = get_node_or_null("/root/WeatherController")
 	if weather_controller:
 		var new_weather = randi() % weather_controller.WeatherType.size()
 		weather_controller.set_weather(new_weather)

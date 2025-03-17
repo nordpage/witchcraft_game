@@ -17,7 +17,7 @@ func _ready():
 	contact_monitor = true
 	max_contacts_reported = 4
 	continuous_cd = true  # Предотвращает проваливание на высоких скоростях
-	
+
 	# Добавляем тележку в группу для обнаружения коллизий
 	add_to_group("cart")
 
@@ -40,7 +40,7 @@ func _physics_process(delta: float) -> void:
 		if is_moving:
 			if anim_player.current_animation != "moving":
 				anim_player.play("moving")
-			# Здесь, для простоты, мы расходуем целое число дров. 
+			# Здесь, для простоты, мы расходуем целое число дров.
 			# Можно доработать систему накопления расхода, если требуется более точное потребление.
 			ResourceManager.remove_resource("firewood", int(firewood_consumption_rate * delta))
 	else:

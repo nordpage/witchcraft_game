@@ -47,7 +47,7 @@ var transition_tween: Tween
 
 func _ready() -> void:
 	set_weather(current_weather, false)  # Установка начальной погоды без перехода
-	
+
 	# Настройка таймера случайной смены погоды
 	weather_timer = Timer.new()
 	weather_timer.wait_time = weather_change_interval
@@ -55,33 +55,33 @@ func _ready() -> void:
 	weather_timer.autostart = use_random_weather
 	add_child(weather_timer)
 	weather_timer.connect("timeout", Callable(self, "_on_weather_timer_timeout"))
-	
+
 	# Настройка частиц дождя, если они есть
 	if rain_particles:
 		adjust_rain_intensity(rain_intensity)
-	
+
 	randomize()  # Инициализируем генератор случайных чисел
 
 func _on_weather_timer_timeout() -> void:
 	if !use_random_weather:
 		return
-		
+
 	# Выбираем новую погоду, отличную от текущей
 	var new_weather = current_weather
 	while new_weather == current_weather:
 		new_weather = randi() % WeatherType.size()
-	
+
 	set_weather(new_weather)
 
 # Установка погоды с опциональным плавным переходом
 func set_weather(weather: int, with_transition: bool = true) -> void:
 	var old_weather = current_weather
 	current_weather = weather
-	
+
 	# Отменяем предыдущий переход, если он активен
 	if transition_tween and transition_tween.is_valid():
 		transition_tween.kill()
-		
+
 	# Применяем эффекты новой погоды
 	match weather:
 		WeatherType.CLEAR:
@@ -93,12 +93,12 @@ func set_weather(weather: int, with_transition: bool = true) -> void:
 					rain_particles.visible = false
 				disable_volumetric_fog()
 			#print("Weather set to CLEAR (sunny)")
-			
+
 			# Если был дождь, запускаем высыхание для всех грядок с задержкой
 			if old_weather == WeatherType.RAIN:
 				await get_tree().create_timer(rain_drying_delay).timeout
 				start_drying_all_soil()
-				
+
 		WeatherType.RAIN:
 			if with_transition:
 				fade_rain(true, 1.0)
@@ -108,14 +108,14 @@ func set_weather(weather: int, with_transition: bool = true) -> void:
 					rain_particles.visible = true
 				disable_volumetric_fog()
 			#print("Weather set to RAIN")
-			
+
 			# Поливаем все грядки, когда начинается дождь
 			water_all_soil()
-			
+
 		WeatherType.FOG:
 			if with_transition:
 				fade_rain(false, 1.0)
-				
+
 				# Определяем тип тумана в зависимости от времени суток
 				var day_night_cycle = get_node_or_null("/root/DayNightCycle")
 				if day_night_cycle and (day_night_cycle.time_of_day > 0.75 or day_night_cycle.time_of_day < 0.25):
@@ -124,14 +124,14 @@ func set_weather(weather: int, with_transition: bool = true) -> void:
 				else:
 					# Дневной туман - более светлый и рассеянный
 					set_fog_properties(0.05, Color(0.8, 0.8, 0.8), Color(0.7, 0.7, 0.7))
-				
+
 				fade_fog_in(2.0)
 			else:
 				if rain_particles:
 					rain_particles.visible = false
 				enable_volumetric_fog()
 			#print("Weather set to FOG (volumetric fog)")
-	
+
 	# Отправляем сигнал о смене погоды
 	emit_signal("weather_changed", weather)
 
@@ -165,23 +165,23 @@ func enable_volumetric_fog() -> void:
 	if env:
 		env.fog_enabled = true
 		env.volumetric_fog_enabled = true
-		
+
 		# Основные параметры
 		env.volumetric_fog_density = volumetric_fog_density
 		env.volumetric_fog_albedo = volumetric_fog_albedo
 		env.volumetric_fog_emission = volumetric_fog_emission
 		env.volumetric_fog_emission_energy = 0.0
 		env.volumetric_fog_ambient = volumetric_fog_ambient
-		
+
 		# Настройки качества и деталей
 		env.volumetric_fog_detail_spread = volumetric_fog_detail_spread
 		env.volumetric_fog_gi_inject = volumetric_fog_gi_inject
-		
+
 		# Высота тумана
 		env.volumetric_fog_length = 128.0
 		env.volumetric_fog_height = volumetric_fog_height
 		env.volumetric_fog_sky_affect = 0.8
-		
+
 		# Также настраиваем обычный туман
 		env.fog_density = fog_density
 		env.fog_height = fog_height
@@ -190,7 +190,7 @@ func enable_volumetric_fog() -> void:
 		env.fog_light_color = fog_light_color  # Используем fog_light_color вместо fog_color
 		env.fog_depth_begin = fog_depth_begin
 		env.fog_depth_end = fog_depth_end
-		
+
 		print("Volumetric fog enabled with density: ", volumetric_fog_density)
 	else:
 		print("WorldEnvironment.environment не найден!")
@@ -214,11 +214,11 @@ func fade_fog_in(duration: float = 2.0) -> void:
 		env.fog_light_color = fog_light_color  # Используем fog_light_color вместо fog_color
 		env.fog_depth_begin = fog_depth_begin
 		env.fog_depth_end = fog_depth_end
-		
+
 		# Начинаем с нулевой плотности
 		env.fog_density = 0.0
 		env.volumetric_fog_density = 0.0
-		
+
 		# Плавно увеличиваем плотность
 		transition_tween = create_tween().set_ease(Tween.EASE_IN_OUT)
 		transition_tween.tween_property(env, "fog_density", fog_density, duration)

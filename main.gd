@@ -30,13 +30,13 @@ func create_submenu(parent_menu):
 	submenu.show_animation = parent_menu.show_animation
 	submenu.animation_speed_factor = parent_menu.animation_speed_factor
 	submenu.menu_items = [
-		{'texture': PLANT_TEXTURE, 'title': "Drunken Petunia", 'id': "plant1"}, 
-		{'texture': PLANT_TEXTURE, 'title': "Rebel Basil", 'id': "plant2"}, 
-		{'texture': PLANT_TEXTURE, 'title': "Rebellious Heather", 'id': "plant3"}, 
-		
+		{'texture': PLANT_TEXTURE, 'title': "Drunken Petunia", 'id': "plant1"},
+		{'texture': PLANT_TEXTURE, 'title': "Rebel Basil", 'id': "plant2"},
+		{'texture': PLANT_TEXTURE, 'title': "Rebellious Heather", 'id': "plant3"},
+
 	]
 	return submenu
-		
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -44,36 +44,36 @@ func _ready():
 	Cart.connect("is_moving", Callable(self, "_on_cart_updated"))
 	for soil in get_tree().get_nodes_in_group("soil"):
 		soil.connect("soil_clicked", Callable(self, "_on_soil_clicked"))
-	
+
 	# Create a few dummy submenus
 	var submenu1 = create_submenu($SoilMenu)
-		
+
 	# Define the main menu's items
 	$SoilMenu.menu_items = [
-		{'texture': PLANT_TEXTURE, 'title': "Plant", 'id': "planting"}, 
+		{'texture': PLANT_TEXTURE, 'title': "Plant", 'id': "planting"},
 		{'texture': WATER_TEXTURE, 'title': "Watering", 'id': "watering"},
-		{'texture': COMPOST_TEXTURE, 'title': "Compost", 'id': "compost"},		
-		{'texture': HARVEST_TEXTURE, 'title': "Harvest", 'id': "harvest"},		
+		{'texture': COMPOST_TEXTURE, 'title': "Compost", 'id': "compost"},
+		{'texture': HARVEST_TEXTURE, 'title': "Harvest", 'id': "harvest"},
 
 
 		#{'texture': ORIGIN_TEXTURE, 'title': "Back to\norigin", 'id': "action5"},
-		#{'texture': SCALE_TEXTURE, 'title': "Reset\nscale", 'id': "action6"},		
+		#{'texture': SCALE_TEXTURE, 'title': "Reset\nscale", 'id': "action6"},
 	]
 
-	
+
 #func _input(event):
-	#if event is InputEventMouseButton:		
+	#if event is InputEventMouseButton:
 		## open the menu
 		#if event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
-			#var m = get_local_mouse_position()			
+			#var m = get_local_mouse_position()
 			#$Node/RadialMenu.open_menu(m)
 			#get_viewport().set_input_as_handled()
-			
+
 func _on_cart_updated(data):
 	is_moving_state = data
 	# Обработка сигнала, data — это данные, переданные сигналом
-	
-			
+
+
 func _on_ArcPopupMenu_item_selected(action, _position):
 	if str(action) == "watering":
 		selected_soil.water();
@@ -81,12 +81,12 @@ func _on_ArcPopupMenu_item_selected(action, _position):
 		selected_soil.plant()
 	if str(action) == "harvest":
 		selected_soil.harvest()
-	
+
 func _on_soil_clicked(soil, position):
 	if !is_moving_state:
 		selected_soil = soil
 		print("Получена информация от грядки:", soil.soil_parameters.soil_title)
-		var m = position		
+		var m = position
 		$SoilMenu.open_menu(m)
 		get_viewport().set_input_as_handled()
 		# Здесь можно, например, обновить интерфейс или запустить какую-либо логику

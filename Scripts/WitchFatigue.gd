@@ -22,7 +22,7 @@ func _process(delta):
 			var new_fatigue = max(0, current_fatigue - recovery)
 			# Напрямую используем set_resource, чтобы обновить значение даже при малых изменениях
 			ResourceManager.set_resource("witch_fatigue", new_fatigue)
-		
+
 	# Проверяем, не достигла ли усталость критического уровня
 	check_fatigue_warnings()
 
@@ -31,7 +31,7 @@ func add_fatigue(amount: float) -> void:
 	var current = ResourceManager.get_resource("witch_fatigue")
 	var new_value = min(current + amount, max_fatigue)
 	ResourceManager.set_resource("witch_fatigue", new_value)
-	
+
 	# Останавливаем восстановление на короткий период после добавления усталости
 	is_recovering = false
 	await get_tree().create_timer(1.0).timeout
@@ -41,7 +41,7 @@ func add_fatigue(amount: float) -> void:
 func boost_recovery(multiplier: float, duration: float) -> void:
 	var old_multiplier = recovery_multiplier
 	recovery_multiplier = multiplier
-	
+
 	await get_tree().create_timer(duration).timeout
 	recovery_multiplier = old_multiplier
 

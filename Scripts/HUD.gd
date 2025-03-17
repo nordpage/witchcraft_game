@@ -14,13 +14,13 @@ func _ready():
 	_update_resource_ui("seeds", ResourceManager.get_resource("seeds"))
 	_update_resource_ui("plants", ResourceManager.get_resource("plants"))
 	_update_resource_ui("witch_fatigue", ResourceManager.get_resource("witch_fatigue"))
-	
+
 	# Скрываем UI зельеварения
 	brewing_ui.visible = false
-	
+
 func _on_brewing_button_pressed():
 	# Переключаем видимость UI зельеварения
-	brewing_ui.visible = !brewing_ui.visible	
+	brewing_ui.visible = !brewing_ui.visible
 
 func _process(delta):
 	# Обновляем индикатор усталости каждый кадр для плавности
@@ -28,7 +28,7 @@ func _process(delta):
 
 func _on_resource_changed(resource_name: String, new_value) -> void:
 	_update_resource_ui(resource_name, new_value)
-		
+
 func _update_resource_ui(resource_name: String, new_value) -> void:
 	match resource_name:
 		"firewood":
@@ -48,7 +48,7 @@ func _update_fatigue_ui(fatigue_value: float) -> void:
 	if FatigueBar:
 		# Устанавливаем значение индикатора (ProgressBar принимает float)
 		FatigueBar.value = fatigue_value
-		
+
 		# Меняем цвет индикатора усталости в зависимости от значения
 		if fatigue_value > 0.7:
 			FatigueBar.modulate = Color(1.0, 0.3, 0.3)  # Красный

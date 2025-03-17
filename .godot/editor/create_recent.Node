@@ -1,4 +1,9 @@
+Camera3D
+RigidBody3D
+MeshInstance3D
 CollisionShape3D
+HingeJoint3D
+Node3D
 CollisionPolygon3D
 StaticBody3D
 OmniLight3D
@@ -7,8 +12,3 @@ Button
 Label
 VBoxContainer
 PanelContainer
-HBoxContainer
-HSlider
-Control
-VSlider
-Node3D

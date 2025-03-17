@@ -14,7 +14,7 @@ extends Control
 func _ready():
 	# Скрываем UI по умолчанию
 	visible = false
-	
+
 	# Подключаем кнопки
 	growth_button.connect("pressed", Callable(self, "_on_growth_button_pressed"))
 	weather_button.connect("pressed", Callable(self, "_on_weather_button_pressed"))
@@ -25,10 +25,10 @@ func _ready():
 	ResourceManager.connect("resource_changed", Callable(self, "_update_buttons"))
 	if potion_system:
 		potion_system.connect("potion_brewed", Callable(self, "_on_potion_brewed"))
-	
+
 	# Обновляем состояние кнопок
 	_update_buttons("", 0)
-	
+
 	# Скрываем метку результата
 	result_label.visible = false
 
@@ -52,11 +52,11 @@ func _on_potion_brewed(potion_type, potion_name):
 	# Отображаем результат
 	result_label.text = "Prepared:\n" + potion_name
 	result_label.visible = true
-	
+
 	# Скрываем метку через 3 секунды
 	await get_tree().create_timer(3.0).timeout
 	result_label.visible = false
-	
+
 	# Проигрываем анимацию, если она есть
 	if brewing_animation and brewing_animation.has_animation("brew"):
 		brewing_animation.play("brew")
@@ -67,7 +67,7 @@ func _update_buttons(resource_name="", value=0):
 		growth_button.disabled = !potion_system.can_brew_potion(potion_system.PotionType.GROWTH)
 		weather_button.disabled = !potion_system.can_brew_potion(potion_system.PotionType.WEATHER)
 		energy_button.disabled = !potion_system.can_brew_potion(potion_system.PotionType.ENERGY)
-		
+
 		# Обновляем текст на кнопках, показывая необходимые ингредиенты
 		update_button_text(growth_button, potion_system.PotionType.GROWTH, "Elixir of Growth")
 		update_button_text(weather_button, potion_system.PotionType.WEATHER, "Weather Potion")
@@ -76,12 +76,12 @@ func _update_buttons(resource_name="", value=0):
 func update_button_text(button, potion_type, base_name):
 	var recipe = potion_system.recipes[potion_type]
 	var text = base_name + "\n"
-	
+
 	for ingredient in recipe:
 		var required = recipe[ingredient]
 		var available = ResourceManager.get_resource(ingredient)
 		text += ingredient + ": " + str(int(available)) + "/" + str(required) + "\n"
-	
+
 	button.text = text
 
 func show_brewing_ui():
