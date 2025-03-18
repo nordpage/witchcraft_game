@@ -31,6 +31,7 @@ var right_pressed: bool = false
 # Значения для лампы
 var lamp_target_rotation: float = 0.0
 var lamp_current_rotation: float = 0.0
+signal is_moving(state)
 
 func _ready():
 	center_of_mass_mode = VehicleBody3D.CENTER_OF_MASS_MODE_CUSTOM
@@ -90,7 +91,9 @@ func _input(event: InputEvent) -> void:
 func rotate_wheels(delta: float) -> void:
 	# Вычисляем скорость вращения
 	var forward_velocity = -linear_velocity.z  # Скорость вдоль оси Z
-	var wheel_radius = 0.5  # Радиус колеса
+	var is_cart_moving = forward_velocity > 0.5
+	emit_signal("is_moving", is_cart_moving)
+	var wheel_radius = 1.875  # Радиус колеса
 	var rotation_speed = forward_velocity / wheel_radius  # Угловая скорость
 
 	# Вращаем колеса

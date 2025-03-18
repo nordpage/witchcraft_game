@@ -42,7 +42,7 @@ func _on_brewing_button_pressed():
 	#brewing_ui.visible = !brewing_ui.visible
 	pass
 
-func _process(delta):
+func _process(_delta):
 	# Обновляем индикатор усталости каждый кадр для плавности
 	_update_fatigue_ui(ResourceManager.get_resource("witch_fatigue"))
 

@@ -144,13 +144,14 @@ func set_fog_properties(density: float, vol_albedo: Color, light_color: Color) -
 # Плавное появление дождя
 func fade_rain(visible: bool, duration: float = 1.0) -> void:
 	if rain_particles:
+		var tween = create_tween().set_ease(Tween.EASE_IN_OUT)
+
 		if visible:
 			rain_particles.visible = true
-			var tween = create_tween().set_ease(Tween.EASE_IN)
-			tween.tween_property(rain_particles, "amount_scale", rain_intensity, duration)
+			rain_particles.emitting = true
+			tween.tween_property(rain_particles, "speed_scale", 1.0, duration)  # Постепенно увеличиваем скорость капель
 		else:
-			var tween = create_tween().set_ease(Tween.EASE_OUT)
-			tween.tween_property(rain_particles, "amount_scale", 0.0, duration)
+			tween.tween_property(rain_particles, "speed_scale", 0.1, duration)  # Постепенно замедляем дождь
 			tween.tween_callback(Callable(rain_particles, "set_visible").bind(false))
 
 # Настройка интенсивности дождя
