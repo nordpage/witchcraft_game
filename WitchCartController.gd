@@ -1,141 +1,113 @@
-# WitchCartController.gd - прикрепите к RigidBody3D witch_cart
 extends RigidBody3D
 
-@export var max_speed: float = 5.0
-@export var engine_force: float = 50.0
-@export var steering_angle: float = 0.5  # В радианах (~28 градусов)
+@export var max_speed: float = 30.0
+@export var acceleration: float = 200.0
+@export var steering_speed: float = 1.5
+@export var suspension_strength: float = 200.0
+@export var damping: float = 0.9
 
-# Ссылки на колеса
-@onready var wheel_fl: RigidBody3D = $"../WheelFrontLeft"
-@onready var wheel_fr: RigidBody3D = $"../WheelFrontRight"
-@onready var wheel_bl: RigidBody3D = $"../WheelBackLeft"
-@onready var wheel_br: RigidBody3D = $"../WheelBackRight"
+@onready var wheel_fl: RigidBody3D = $Suspension_FL/WheelFrontLeft
+@onready var wheel_fr: RigidBody3D = $Suspension_FR/WheelFrontRight
+@onready var wheel_bl: RigidBody3D = $Suspension_BL/WheelBackLeft
+@onready var wheel_br: RigidBody3D = $Suspension_BR/WheelBackRight
+@onready var terrain = $HTerrain # Указываем путь к HTerrain
 
-# Ссылки на все шарниры
-@onready var hinge_fl: HingeJoint3D = $"../HingeJoint_FL"
-@onready var hinge_fr: HingeJoint3D = $"../HingeJoint_FR"
-@onready var hinge_bl: HingeJoint3D = $"../HingeJoint_BL"
-@onready var hinge_br: HingeJoint3D = $"../HingeJoint_BR"
 
-# Управляющие параметры
 var speed_input: float = 0.0
 var steering_input: float = 0.0
 
-# Сигнал о движении для других систем
-signal is_moving(state)
+func _ready() -> void:
+	lock_wheel_axes()
+	for wheel in [wheel_fl, wheel_fr, wheel_bl, wheel_br]:
+		wheel.set_collision_mask_value(3, false)  # Колёса не сталкиваются с тележкой
 
-func _ready():
-	# Настройка физики тележки
-	add_to_group("cart")
-	axis_lock_angular_x = true
-	axis_lock_angular_z = true
-
-	# Настраиваем физические параметры
-	mass = 200.0
-	linear_damp = 0.3
-	angular_damp = 1.5
-
-	# Создаем физический материал для тележки
-	var cart_material = PhysicsMaterial.new()
-	cart_material.friction = 1.0
-	cart_material.rough = true
-	cart_material.bounce = 0.1
-	physics_material_override = cart_material
-
-	# Настраиваем задние шарниры
-	setup_rear_hinges()
+	if terrain:
+		terrain.regenerate_collision()  # Принудительно обновляем коллизии
 
 func _physics_process(delta):
-	# Применяем двигательные силы к колесам
-	apply_motor_forces()
-
-	# Обрабатываем рулевое управление
+	apply_suspension()
 	handle_steering()
+	apply_motor_force()
+	align_to_terrain()
+	prevent_rollover()
+	for wheel in [wheel_fl, wheel_fr, wheel_bl, wheel_br]:
+		print("Высота колеса:", wheel.global_transform.origin.y)
 
-	# Добавляем небольшую прижимающую силу для лучшего сцепления
-	apply_downforce()
 
-	# Отправляем сигнал о состоянии движения
-	var is_cart_moving = linear_velocity.length() > 0.5
-	emit_signal("is_moving", is_cart_moving)
 
-	# Добавляем усталость ведьме при движении
-	if is_cart_moving:
-		var fatigue_amount = delta * 0.01 * linear_velocity.length() / max_speed
-		WitchFatigue.add_fatigue(fatigue_amount)
+func align_to_terrain():
+	if not terrain:
+		return
 
-# Настройка задних шарниров
-func setup_rear_hinges():
-	if hinge_bl and hinge_br:
-		# Задаем фиксированные ограничения для задних колес (только вращение)
-		set_hinge_angle(hinge_bl, 0)  # Фиксируем в прямом положении
-		set_hinge_angle(hinge_br, 0)  # Фиксируем в прямом положении
+	var ray_start = global_transform.origin + Vector3(0, 2, 0)  # Луч сверху
+	var ray_end = global_transform.origin + Vector3(0, -5, 0)  # Луч вниз
 
-		# Дополнительные настройки для стабильности
-		hinge_bl.set_param(HingeJoint3D.PARAM_BIAS, 0.9)
-		hinge_br.set_param(HingeJoint3D.PARAM_BIAS, 0.9)
+	var ray_query = PhysicsRayQueryParameters3D.create(ray_start, ray_end)
+	var result = get_world_3d().direct_space_state.intersect_ray(ray_query)
 
-# Применяем двигательные силы к колесам
-func apply_motor_forces():
-	if abs(speed_input) > 0.05:
-		# Вычисляем силу на основе ввода
-		var drive_force = speed_input * engine_force
+	if result:
+		var normal = result["normal"]
 
-		# Распределяем силу между колесами
-		var wheel_force = drive_force / 4.0
+		# Получаем новый Basis с правильным наклоном
+		var forward = -global_transform.basis.z  # Текущий вектор вперёд
+		var new_basis = Basis().looking_at(forward, normal)  # Выравниваем по нормали
 
-		# Применяем силу к каждому колесу
-		apply_wheel_force(wheel_fl, wheel_force)
-		apply_wheel_force(wheel_fr, wheel_force)
-		apply_wheel_force(wheel_bl, wheel_force)
-		apply_wheel_force(wheel_br, wheel_force)
+		# Плавно интерполируем (чтобы не дёргалось)
+		global_transform.basis = global_transform.basis.slerp(new_basis, 0.1)
 
-# Применяем силу к отдельному колесу
-func apply_wheel_force(wheel: RigidBody3D, force: float):
-	if wheel:
-		# Вычисляем направление "вперед" для колеса
-		var forward_dir = -wheel.global_transform.basis.z
+func prevent_rollover():
+	var up = global_transform.basis.y  # Направление вверх
+	var angle = up.angle_to(Vector3.UP)  # Угол отклонения
 
-		# Применяем силу
-		wheel.apply_central_force(forward_dir * force)
+	if angle > deg_to_rad(20):  # Если завал тележки больше 20 градусов
+		var correction_force = up.cross(Vector3.UP) * mass * 10.0
+		apply_torque(correction_force)  # Стабилизируем тележку
 
-# Обрабатываем рулевое управление
+
+# 📌 Подвеска (мягкость)
+func apply_suspension():
+	for wheel in [wheel_fl, wheel_fr, wheel_bl, wheel_br]:
+		var ray_start = wheel.global_transform.origin + Vector3(0, 1, 0)
+		var ray_end = wheel.global_transform.origin + Vector3(0, -1, 0)
+
+		var ray_query = PhysicsRayQueryParameters3D.create(ray_start, ray_end)
+		var result = get_world_3d().direct_space_state.intersect_ray(ray_query)
+
+		if result:
+			var compression = 1.0 - result["position"].y / wheel.global_transform.origin.y
+			var force = 1200.0 * compression  # Увеличиваем силу подвески
+			wheel.apply_central_force(Vector3(0, force, 0))
+
+		wheel.linear_velocity *= 0.9  # Гасим резкие колебания
+
+func lock_wheel_axes():
+	for wheel in [wheel_bl, wheel_br]:  # Задние колёса (приводные)
+		wheel.axis_lock_angular_x = true  # Запрещаем наклоняться вбок
+		wheel.axis_lock_angular_y = false  # Разрешаем крутиться (двигаться)
+		wheel.axis_lock_angular_z = true  # Запрещаем вращаться вокруг продольной оси
+
+	for wheel in [wheel_fl, wheel_fr]:  # Передние колёса (рулевые)
+		wheel.axis_lock_angular_x = true  # Запрещаем наклоняться вбок
+		wheel.axis_lock_angular_y = false  # Разрешаем поворот рулём
+		wheel.axis_lock_angular_z = true  # Запрещаем вибрацию вперёд-назад
+
+
+
+# 📌 Поворот передних колёс
 func handle_steering():
-	if hinge_fl and hinge_fr:
-		# Вычисляем угол на основе ввода
-		var steer_angle = steering_input * steering_angle
+	var turn_force = steering_input * steering_speed
+	wheel_fl.apply_torque(Vector3(0, turn_force, 0))
+	wheel_fr.apply_torque(Vector3(0, turn_force, 0))
 
-		# Применяем к передним шарнирам
-		set_hinge_angle(hinge_fl, steer_angle)
-		set_hinge_angle(hinge_fr, steer_angle)
+# 📌 Привод на задние колёса
+func apply_motor_force():
+	if abs(speed_input) > 0.05:
+		var force = -global_transform.basis.z * (speed_input * 1500.0)  # Достаточно силы для движения
+		apply_central_force(force)  # Применяем силу ко всей тележке
 
-# Устанавливаем угол шарнира
-func set_hinge_angle(hinge: HingeJoint3D, angle: float):
-	# Настраиваем верхний и нижний пределы с небольшим допуском
-	hinge.set_param(HingeJoint3D.PARAM_LIMIT_LOWER, angle - 0.01)
-	hinge.set_param(HingeJoint3D.PARAM_LIMIT_UPPER, angle + 0.01)
 
-	# Убеждаемся, что ограничения включены
-	hinge.set_flag(HingeJoint3D.FLAG_USE_LIMIT, true)
-
-# Добавляем прижимающую силу для лучшего сцепления
-func apply_downforce():
-	# Дополнительная сила вниз для лучшего сцепления при движении
-	if linear_velocity.length() > 0.1:
-		var down_force = Vector3(0, -9.8 * mass * 0.2, 0)  # 20% от веса
-		apply_central_force(down_force)
-
-# Метод для получения ввода от UI слайдера
-func set_speed_input(value: float):
-	speed_input = value
-
-# Метод для получения ввода руления от UI слайдера
-func set_steering_input(value: float):
-	steering_input = value
-
-# Обработка входных данных (опционально, если есть прямой контроль с клавиатуры)
+# 📌 Вход с клавиатуры
 func _input(event):
-	# Пример обработки клавиатуры (можно удалить, если используется только UI)
 	if event is InputEventKey:
 		if event.pressed:
 			if event.keycode == KEY_W:
@@ -146,7 +118,7 @@ func _input(event):
 				steering_input = -1.0
 			elif event.keycode == KEY_D:
 				steering_input = 1.0
-		else:  # Клавиша отпущена
+		else:
 			if event.keycode == KEY_W or event.keycode == KEY_S:
 				speed_input = 0.0
 			elif event.keycode == KEY_A or event.keycode == KEY_D:

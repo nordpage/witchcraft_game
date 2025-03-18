@@ -85,7 +85,7 @@
 		},
 		{
 			"mesh":2,
-			"name":"Soil3.001",
+			"name":"Soil4",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -100,7 +100,7 @@
 		},
 		{
 			"mesh":3,
-			"name":"Soil3.002",
+			"name":"Soil7",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -115,7 +115,7 @@
 		},
 		{
 			"mesh":4,
-			"name":"Soil3.003",
+			"name":"Soil10",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -130,7 +130,7 @@
 		},
 		{
 			"mesh":5,
-			"name":"Soil3.004",
+			"name":"Soil13",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -145,7 +145,7 @@
 		},
 		{
 			"mesh":6,
-			"name":"Soil3.005",
+			"name":"Soil16",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -160,7 +160,7 @@
 		},
 		{
 			"mesh":7,
-			"name":"Soil3.006",
+			"name":"Soil2",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -175,7 +175,7 @@
 		},
 		{
 			"mesh":8,
-			"name":"Soil3.007",
+			"name":"Soil5",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -190,7 +190,7 @@
 		},
 		{
 			"mesh":9,
-			"name":"Soil3.008",
+			"name":"Soil8",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -205,7 +205,7 @@
 		},
 		{
 			"mesh":10,
-			"name":"Soil3.009",
+			"name":"Soil11",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -220,7 +220,7 @@
 		},
 		{
 			"mesh":11,
-			"name":"Soil3.010",
+			"name":"Soil14",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -235,7 +235,7 @@
 		},
 		{
 			"mesh":12,
-			"name":"Soil3.011",
+			"name":"Soil17",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -250,7 +250,7 @@
 		},
 		{
 			"mesh":13,
-			"name":"Soil3.012",
+			"name":"Soil3",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -265,7 +265,7 @@
 		},
 		{
 			"mesh":14,
-			"name":"Soil3.013",
+			"name":"Soil6",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -280,7 +280,7 @@
 		},
 		{
 			"mesh":15,
-			"name":"Soil3.014",
+			"name":"Soil9",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -295,7 +295,7 @@
 		},
 		{
 			"mesh":16,
-			"name":"Soil3.015",
+			"name":"Soil12",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -310,7 +310,7 @@
 		},
 		{
 			"mesh":17,
-			"name":"Soil3.016",
+			"name":"Soil15",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -325,7 +325,7 @@
 		},
 		{
 			"mesh":18,
-			"name":"Soil3.017",
+			"name":"Soil18",
 			"rotation":[
 				0,
 				0.7071068286895752,
@@ -340,7 +340,7 @@
 		},
 		{
 			"mesh":19,
-			"name":"Soil3.018",
+			"name":"Soil1",
 			"rotation":[
 				0,
 				-1,
@@ -412,7 +412,7 @@
 		},
 		{
 			"mesh":25,
-			"name":"WheelFrontLeft",
+			"name":"WheelFrontRight",
 			"translation":[
 				3.4314000606536865,
 				1.855743169784546,
@@ -421,7 +421,7 @@
 		},
 		{
 			"mesh":26,
-			"name":"WheelFrontRight",
+			"name":"WheelFrontLeft",
 			"translation":[
 				-3.318599224090576,
 				1.8557441234588623,

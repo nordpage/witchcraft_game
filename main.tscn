@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://b2x64pn7vrdbk"]
+[gd_scene load_steps=24 format=3 uid="uid://b2x64pn7vrdbk"]
 
 [ext_resource type="Script" uid="uid://b0phe6rlopamo" path="res://main.gd" id="1_5vw27"]
 [ext_resource type="PackedScene" uid="uid://iopwhmejcr8b" path="res://addons/RadialMenu/RadialMenu.tscn" id="6_272bh"]
@@ -14,10 +14,8 @@
 [ext_resource type="Script" uid="uid://g7tttnunwbec" path="res://addons/zylann.hterrain/hterrain.gd" id="18_cegan"]
 [ext_resource type="Script" uid="uid://b4lgdcn43p51m" path="res://addons/zylann.hterrain/hterrain_texture_set.gd" id="19_82xsv"]
 [ext_resource type="Texture2D" uid="uid://b672eidlg0qrc" path="res://textures/grass/Wild_Grass_oiloL0_2K_BaseColor.jpg" id="20_d13ii"]
-[ext_resource type="Texture2D" uid="uid://dmwkgtyiuqyqt" path="res://textures/ground_albedo.jpg" id="21_0odxb"]
 [ext_resource type="Texture2D" uid="uid://b0hbd03xqw8qn" path="res://textures/grass/Wild_Grass_oiloL0_2K_Normal.jpg" id="22_0odxb"]
 [ext_resource type="Resource" uid="uid://5w6p8x257feu" path="res://TerrainData/data.hterrain" id="22_qsp4k"]
-[ext_resource type="Texture2D" uid="uid://cwwqam3krrxk1" path="res://textures/ground_normal.jpg" id="23_lswn8"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_w48qg"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -48,10 +46,10 @@ corner_radius_top_right = 16
 corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
 
-[sub_resource type="Resource" id="Resource_qsp4k"]
+[sub_resource type="Resource" id="Resource_w48qg"]
 script = ExtResource("19_82xsv")
 mode = 0
-textures = [[ExtResource("20_d13ii"), ExtResource("21_0odxb")], [ExtResource("22_0odxb"), ExtResource("23_lswn8")]]
+textures = [[ExtResource("20_d13ii")], [ExtResource("22_0odxb")]]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_5vw27")
@@ -223,18 +221,21 @@ text = "Close"
 [node name="WeatherController" parent="." instance=ExtResource("14_w48qg")]
 weather_change_interval = 45.0
 
-[node name="HTerrain" type="Node3D" parent="." groups=["cart"]]
+[node name="CART" parent="." instance=ExtResource("18_074og")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -91.0909, 6.43622, 0)
+
+[node name="HTerrain" type="Node3D" parent="."]
 script = ExtResource("18_cegan")
 centered = true
 _terrain_data = ExtResource("22_qsp4k")
 chunk_size = 32
 collision_enabled = true
 collision_layer = 1
-collision_mask = 5
+collision_mask = 2
 shader_type = "Classic4Lite"
 custom_shader = null
 custom_globalmap_shader = null
-texture_set = SubResource("Resource_qsp4k")
+texture_set = SubResource("Resource_w48qg")
 render_layers = 1
 cast_shadow = 1
 shader_params/u_ground_uv_scale = 20
@@ -242,9 +243,6 @@ shader_params/u_depth_blending = true
 shader_params/u_triplanar = null
 shader_params/u_tile_reduction = null
 metadata/_custom_type_script = "uid://g7tttnunwbec"
-
-[node name="CART" parent="." instance=ExtResource("18_074og")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.98124, 0)
 
 [connection signal="item_selected" from="SoilMenu" to="." method="_on_ArcPopupMenu_item_selected"]
 [connection signal="pressed" from="CanvasLayer/PanelContainer/HBoxContainer/BrewingButton" to="CanvasLayer" method="_on_brewing_button_pressed"]
