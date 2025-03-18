@@ -1,12 +1,13 @@
 # Изменения в HUD.gd
 extends CanvasLayer
 
+@onready var DayTimeLabel = $PanelContainer/HBoxContainer/DayTimeLabel
 @onready var FirewoodLabel = $PanelContainer/HBoxContainer/FirewoodLabel
 @onready var FatigueBar = $PanelContainer/HBoxContainer/FatigueBar
 @onready var SeedLabel = $PanelContainer/HBoxContainer/SeedLabel
 @onready var PlantsLabel = $PanelContainer/HBoxContainer/PlantsLabel
-@onready var brewing_ui = $BrewingUI
-@onready var brewing_button = $BrewingButton
+#@onready var brewing_ui = $BrewingUI
+#@onready var brewing_button = $BrewingButton
 
 func _ready():
 	ResourceManager.connect("resource_changed", Callable(self, "_on_resource_changed"))
@@ -14,13 +15,32 @@ func _ready():
 	_update_resource_ui("seeds", ResourceManager.get_resource("seeds"))
 	_update_resource_ui("plants", ResourceManager.get_resource("plants"))
 	_update_resource_ui("witch_fatigue", ResourceManager.get_resource("witch_fatigue"))
+	var DayNightCycle = $"../DayNightCycle"
+	DayNightCycle.connect("time_of_day_changed", Callable(self, "_on_time_of_day_changed"))
 
 	# Скрываем UI зельеварения
-	brewing_ui.visible = false
+	#brewing_ui.visible = false
+
+func _on_time_of_day_changed(current_time_of_day):
+	match current_time_of_day:
+		1:
+			DayTimeLabel.text = "Рассвет"
+		2:
+			DayTimeLabel.text = "Утро"
+		3:
+			DayTimeLabel.text = "День"
+		4:
+			DayTimeLabel.text = "Вечер"
+		5:
+			DayTimeLabel.text = "Ночь"
+		_:
+			DayTimeLabel.text = ""
+
 
 func _on_brewing_button_pressed():
 	# Переключаем видимость UI зельеварения
-	brewing_ui.visible = !brewing_ui.visible
+	#brewing_ui.visible = !brewing_ui.visible
+	pass
 
 func _process(delta):
 	# Обновляем индикатор усталости каждый кадр для плавности

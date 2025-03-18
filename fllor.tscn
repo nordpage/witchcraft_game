@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://caqcboah1a4tk"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_pcvol"]
+friction = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_ltcht"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i66yd"]
+
+[node name="Fllor" type="StaticBody3D"]
+physics_material_override = SubResource("PhysicsMaterial_pcvol")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(300, 0, 0, 0, 1, 0, 0, 0, 300, 0, 0, 0)
+mesh = SubResource("BoxMesh_ltcht")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(298.711, 0, 0, 0, 1, 0, 0, 0, 302.971, 0, 0, 0)
+shape = SubResource("BoxShape3D_i66yd")

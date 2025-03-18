@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Witchcraft"
-run/main_scene="res://main.tscn"
+run/main_scene="res://main_scene.tscn"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -24,3 +24,7 @@ PotionSystem="*res://Scripts/PotionSystem.gd"
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/GDBeautifier/plugin.cfg", "res://addons/RadialMenu/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/zylann.hterrain/plugin.cfg")
+
+[physics]
+
+common/physics_ticks_per_second=120
