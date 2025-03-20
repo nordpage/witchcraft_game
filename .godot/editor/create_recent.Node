@@ -1,4 +1,6 @@
 HTerrain
+MeshInstance3D
+MultiMeshInstance3D
 Label
 ProgressBar
 HBoxContainer
@@ -7,8 +9,6 @@ CanvasLayer
 Node3D
 OmniLight3D
 CollisionShape3D
-MeshInstance3D
 StaticBody3D
 VehicleWheel3D
 VehicleBody3D
-Camera3D
