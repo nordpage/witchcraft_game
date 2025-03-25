@@ -1,11 +1,14 @@
 extends CharacterBody3D
 
+# Добавляем сигнал для отслеживания изменения интерактивного объекта
+signal interactable_changed(new_object)
+
 # Узлы
 @onready var skeleton = %Skeleton
 @onready var animation_tree: AnimationTree = $AnimationTree
 @onready var camera = $WitchCameraPivot/WitchCamera
 @onready var camera_pivot := $WitchCameraPivot
-@onready var interaction_ray = $InteractionRay
+@onready var interaction_ray = $WitchCameraPivot/WitchCamera/InteractionRay
 @onready var right_hand = %Skeleton/BoneAttachment3D_RHand
 @onready var hint_label := $"../CanvasLayer/InteractionHint"
 var current_interactable: Node = null
@@ -32,10 +35,25 @@ var camera_base_pos: Vector3
 # Инструмент
 var equipped_tool: Node = null
 
+var last_detected_target: Node = null
+var target_lost_timer: float = 0.0
+var target_lost_threshold: float = 0.2  # Четверть секунды задержки
+
 func _ready():
 	animation_tree.active = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	camera_base_pos = camera.position
+	camera_base_pos = camera.position	
+	
+	# Настройка луча
+	interaction_ray.enabled = true
+	interaction_ray.target_position = Vector3(0, 0, -3) # Луч длиной 3 метра вперед
+	
+	if hint_label:
+		print("Hint label found:", hint_label.name)
+		#hint_label.text = "Debug: Hint system initialized"
+		hint_label.visible = true  # Принудительно показать для тестирования
+	else:
+		print("ERROR: Hint label not found!")
 
 func _input(event):
 	if event is InputEventMouseMotion:
@@ -75,28 +93,51 @@ func _physics_process(delta):
 func _process(delta):
 	handle_animation()
 	handle_camera_bob(delta)
+	interaction_ray.global_transform.basis = camera.global_transform.basis
 	update_interaction_hint()
 	
 	
 func update_interaction_hint():
+	if not interaction_ray.enabled:
+		interaction_ray.enabled = true
+		
 	interaction_ray.force_raycast_update()
-
+	
+	var current_target = null
+	
 	if interaction_ray.is_colliding():
-		var target = interaction_ray.get_collider()
-		if target and target.has_method("get_interaction_hint"):
-			hint_label.text = "[E] " + target.get_interaction_hint()
-			hint_label.visible = true
-			current_interactable = target
-			return
-
-		# если попали, но нет метода — сбрасываем
-		hint_label.visible = false
-		current_interactable = null
+		current_target = interaction_ray.get_collider()
+	
+	# Если цель пропала, но недавно была - используем таймер для задержки
+	if current_target == null and last_detected_target != null:
+		target_lost_timer += get_process_delta_time()
+		if target_lost_timer < target_lost_threshold:
+			current_target = last_detected_target  # Продолжаем использовать последнюю цель
 	else:
-		hint_label.visible = false
-		current_interactable = null
-
-
+		target_lost_timer = 0.0
+	
+	last_detected_target = current_target
+	
+	# Обрабатываем изменение цели только если она действительно изменилась
+	if current_target != current_interactable:
+		# Снимаем подсветку с предыдущего объекта
+		if current_interactable and current_interactable.has_method("unhighlight"):
+			current_interactable.unhighlight()
+		
+		current_interactable = current_target
+		
+		if current_interactable is InteractiveObject:
+			var hint_text = current_interactable.get_interaction_hint()
+			hint_label.text = "[E] " + hint_text
+			hint_label.visible = true
+			
+			if current_interactable.has_method("highlight"):
+				current_interactable.highlight()
+				
+			emit_signal("interactable_changed", current_interactable)
+		else:
+			hint_label.visible = false
+			emit_signal("interactable_changed", null)
 
 func handle_animation():
 	var speed = velocity.length()

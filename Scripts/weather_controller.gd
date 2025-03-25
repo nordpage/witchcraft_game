@@ -34,6 +34,9 @@ var weather_timer: Timer
 var transition_tween: Tween
 
 func _ready() -> void:
+	if rain_particles and current_weather != WeatherType.RAIN:
+		rain_particles.emitting = false
+		rain_particles.visible = false
 	set_weather(current_weather, false)
 
 	weather_timer = Timer.new()
@@ -93,13 +96,31 @@ func adjust_rain_intensity(intensity: float) -> void:
 func fade_rain(visible: bool, duration: float = 1.0) -> void:
 	if rain_particles:
 		var tween = create_tween().set_ease(Tween.EASE_IN_OUT)
+		
 		if visible:
+			# Включаем дождь
 			rain_particles.visible = true
 			rain_particles.emitting = true
-			tween.tween_property(rain_particles, "speed_scale", 1.0, duration)  
+			tween.tween_property(rain_particles, "speed_scale", 1.0, duration)
 		else:
-			tween.tween_property(rain_particles, "speed_scale", 0.1, duration)  
-			tween.tween_callback(Callable(rain_particles, "set_visible").bind(false))
+			# Выключаем дождь
+			tween.tween_property(rain_particles, "speed_scale", 0.1, duration)
+			# После окончания твина
+			tween.tween_callback(func():
+				rain_particles.emitting = false  # Останавливаем испускание новых частиц
+				# Создаем таймер для полного исчезновения - даем время существующим частицам исчезнуть
+				var clear_timer = get_tree().create_timer(rain_particles.lifetime)
+				await clear_timer.timeout
+				rain_particles.visible = false
+			)
+			
+func clear_rain_particles() -> void:
+	if rain_particles:
+		rain_particles.emitting = false
+		rain_particles.visible = false
+		# Очищаем существующие частицы
+		rain_particles.restart()
+		rain_particles.clear_particles()
 
 # 🌫️ Плавное появление/исчезновение тумана
 func fade_fog_in(duration: float = 2.0) -> void:

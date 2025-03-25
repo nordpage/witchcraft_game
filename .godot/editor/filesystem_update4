@@ -24,3 +24,6 @@ res://Plants/Thyme.tscn
 res://Plants/Fennel.tscn
 res://Characters/witch_player.tscn
 res://Scripts/mail_box.gd
+res://Scripts/interactive_object.gd
+res://Scripts/weather_controller.gd
+res://highlight_shader.gdshader

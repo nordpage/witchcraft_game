@@ -51,6 +51,44 @@ func get_interaction_hint():
 		return "Полить"
 	else:
 		return "Собрать"
+		
+func interact():
+	if not soil_parameters.is_sown:
+		# Открыть меню выбора растения для посадки
+		print("Opening plant selection...")
+		var plant_menu = get_node("/root/Main/UI/PlantMenu")
+		if plant_menu:
+			plant_menu.show_for_soil(self)
+	elif not soil_parameters.is_watered:
+		# Полить растение
+		soil_parameters.is_watered = true
+		print("Watering plant...")
+		# Запустить таймер высыхания
+		drying_timer.wait_time = 60.0  # Например, 60 секунд до высыхания
+		drying_timer.start()
+		drying_timer.connect("timeout", Callable(self, "_on_drying_timer_timeout"))
+		WitchFatigue.add_fatigue(0.05)  # Меньше усталости, чем при посадке
+	elif soil_parameters.has_plant:
+		# Собрать растение
+		collect_plant()
+		
+func collect_plant():
+	if soil_parameters.has_plant:
+		print("Collecting plant:", soil_parameters.current_plant)
+		var plant_node = body.get_node_or_null("Plant")
+		if plant_node:
+			plant_node.queue_free()
+		
+		# Добавить собранное растение в инвентарь
+		ResourceManager.add_resource(soil_parameters.current_plant, 1)
+		
+		# Сбросить состояние почвы
+		soil_parameters.has_plant = false
+		soil_parameters.is_sown = false
+		soil_parameters.is_watered = false
+		soil_parameters.current_plant = ""
+		
+		WitchFatigue.add_fatigue(0.05)
 
 
 var drying_timer: Timer = null
