@@ -23,16 +23,18 @@ func _ready():
 
 func _on_time_of_day_changed(current_time_of_day):
 	match current_time_of_day:
+		0:
+			DayTimeLabel.text = "Night"
 		1:
-			DayTimeLabel.text = "Рассвет"
+			DayTimeLabel.text = "Dawn"
 		2:
-			DayTimeLabel.text = "Утро"
+			DayTimeLabel.text = "Morning"
 		3:
-			DayTimeLabel.text = "День"
+			DayTimeLabel.text = "Day"
 		4:
-			DayTimeLabel.text = "Вечер"
+			DayTimeLabel.text = "Evening"
 		5:
-			DayTimeLabel.text = "Ночь"
+			DayTimeLabel.text = "Sunset"
 		_:
 			DayTimeLabel.text = ""
 
