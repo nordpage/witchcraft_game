@@ -10,7 +10,7 @@ const RadialMenu = preload("res://addons/RadialMenu/RadialMenu.gd")
 var selected_soil : StaticBody3D = null
 var is_moving_state: bool = false
 @onready var fade_anim = $CanvasLayer/AnimationPlayer
-
+@onready var plant_selection_menu = $CanvasLayer/PlantSelectionMenu
 @onready var Cart = $CART
 
 func fade_in():
@@ -20,21 +20,28 @@ func fade_out():
 	fade_anim.play("fade_out")
 
 
-func create_submenu(parent_menu):
-	# create a new radial menu
+func create_plant_submenu():
+	# Создаем подменю для каждого типа растения
 	var submenu = RadialMenu.new()
-	# copy some important properties from the parent menu
 	submenu.circle_coverage = 0.45
-	submenu.width = parent_menu.width*1.25
-	submenu.default_theme = parent_menu.default_theme
-	submenu.show_animation = parent_menu.show_animation
-	submenu.animation_speed_factor = parent_menu.animation_speed_factor
-	submenu.menu_items = [
-		{'texture': PLANT_TEXTURE, 'title': "Drunken Petunia", 'id': "plant1"},
-		{'texture': PLANT_TEXTURE, 'title': "Rebel Basil", 'id': "plant2"},
-		{'texture': PLANT_TEXTURE, 'title': "Rebellious Heather", 'id': "plant3"},
-
-	]
+	submenu.width = $SoilMenu.width * 1.25
+	submenu.default_theme = $SoilMenu.default_theme
+	submenu.show_animation = $SoilMenu.show_animation
+	submenu.animation_speed_factor = $SoilMenu.animation_speed_factor
+	
+	# Динамически заполняем подменю доступными растениями
+	var plant_items = []
+	
+	if selected_soil and selected_soil.plant_options:
+		for plant_id in selected_soil.plant_options.keys():
+			var plant_data = selected_soil.plant_options[plant_id]
+			plant_items.append({
+				'texture': PLANT_TEXTURE,
+				'title': plant_data.name,
+				'id': plant_id
+			})
+	
+	submenu.menu_items = plant_items
 	return submenu
 	
 	
@@ -94,54 +101,78 @@ func switch_to_cart():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	# Инициализируем необходимые ресурсы, если их еще нет
+	if ResourceManager.get_resource("water") == 0:
+		ResourceManager.add_resource("water", 10)
+	if ResourceManager.get_resource("fertilizer") == 0:
+		ResourceManager.add_resource("fertilizer", 5)
+		
+	# Подключаем сигналы
 	Cart.connect("is_moving", Callable(self, "_on_cart_updated"))
 	for soil in get_tree().get_nodes_in_group("soil"):
 		soil.connect("soil_clicked", Callable(self, "_on_soil_clicked"))
 
-	# Create a few dummy submenus
-	var submenu1 = create_submenu($SoilMenu)
+	# Настраиваем меню посадки растений
+	if plant_selection_menu:
+		plant_selection_menu.connect("plant_selected", Callable(self, "_on_plant_selected"))
+	else:
+		print("ERROR: PlantSelectionMenu not found in the scene!")
 
-	# Define the main menu's items
+	# Настраиваем меню взаимодействия с грядкой
+	setup_soil_menu()
+
+func setup_soil_menu():
+	# Создаем подменю для растений
+	var plant_submenu = create_plant_submenu()
+	
+	# Настраиваем основное меню взаимодействия с грядкой
 	$SoilMenu.menu_items = [
-		{'texture': PLANT_TEXTURE, 'title': "Plant", 'id': submenu1},
+		{'texture': PLANT_TEXTURE, 'title': "Plant", 'id': plant_submenu},
 		{'texture': WATER_TEXTURE, 'title': "Watering", 'id': "watering"},
-		{'texture': COMPOST_TEXTURE, 'title': "Compost", 'id': "compost"},
-		{'texture': HARVEST_TEXTURE, 'title': "Harvest", 'id': "harvest"},
-
-
-		#{'texture': ORIGIN_TEXTURE, 'title': "Back to\norigin", 'id': "action5"},
-		#{'texture': SCALE_TEXTURE, 'title': "Reset\nscale", 'id': "action6"},
+		{'texture': COMPOST_TEXTURE, 'title': "Fertilize", 'id': "fertilize"},
+		{'texture': HARVEST_TEXTURE, 'title': "Harvest", 'id': "harvest"}
 	]
-
-
-#func _input(event):
-	#if event is InputEventMouseButton:
-		## open the menu
-		#if event.is_pressed() and event.button_index == MOUSE_BUTTON_RIGHT:
-			#var m = get_local_mouse_position()
-			#$Node/RadialMenu.open_menu(m)
-			#get_viewport().set_input_as_handled()
+	
+	# Подключаем сигнал выбора пункта меню
+	$SoilMenu.connect("item_selected", Callable(self, "_on_soil_menu_item_selected"))
 
 func _on_cart_updated(data):
 	is_moving_state = data
-	# Обработка сигнала, data — это данные, переданные сигналом
 
+func _on_soil_menu_item_selected(item_id):
+	if selected_soil == null:
+		return
+	
+	# Обрабатываем действия из основного меню
+	match item_id:
+		"watering":
+			selected_soil.water_plant()
+		"fertilize":
+			selected_soil.fertilize()
+		"harvest":
+			if selected_soil.has_method("collect_plant"):
+				selected_soil.collect_plant()
+			else:
+				print("Method collect_plant not found")
+	
+	# Если это подменю растений, вызываем метод посадки
+	if typeof(item_id) == TYPE_STRING and selected_soil.plant_options.has(item_id):
+		selected_soil.plant(item_id)
 
-func _on_ArcPopupMenu_item_selected(action, _position):
-	if str(action) == "watering":
-		selected_soil.water();
-	if str(action) == "planting":
-		selected_soil.plant()
-	if str(action) == "harvest":
-		selected_soil.harvest()
+func _on_plant_selected(plant_id):
+	if selected_soil:
+		selected_soil.plant(plant_id)
 
 func _on_soil_clicked(soil, position):
 	if !is_moving_state:
 		selected_soil = soil
 		print("Получена информация от грядки:", soil.soil_parameters.soil_title)
-		var m = position
-		$SoilMenu.open_menu(m)
+		
+		# Обновляем подменю с растениями, так как теперь у нас новая грядка
+		setup_soil_menu()
+		
+		# Открываем радиальное меню
+		$SoilMenu.open_menu(position)
 		get_viewport().set_input_as_handled()
-		# Здесь можно, например, обновить интерфейс или запустить какую-либо логику
 	else:
 		print("You need to stop before action!")

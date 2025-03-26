@@ -1,8 +1,9 @@
+res://
+res://UI
 res://Scripts
 res://materials/Gold
 res://retarget
 res://Retarget
-res://
 C:/Users/auril/Documents/witchcraft/addons/zylann.hterrain/tools/brush/shapes
 res://ter_res
 res://textures_raw/Rock028_2K-JPG
@@ -14,7 +15,6 @@ res://m_terr
 res://textures_raw/Rocks007_2K-JPG
 res://terrain_textures
 res://materials/glass
-res://UI
 res://models/plants/plant1
 res://materials/metal
 res://materials/roof

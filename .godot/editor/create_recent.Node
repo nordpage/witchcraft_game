@@ -1,4 +1,9 @@
+GridContainer
+ScrollContainer
+TextureButton
 Label
+HBoxContainer
+VBoxContainer
 StaticBody3D
 Node3D
 CollisionShape3D
@@ -8,8 +13,3 @@ AnimationPlayer
 ColorRect
 RayCast3D
 Camera3D
-AnimationTree
-Skeleton3D
-CharacterBody3D
-HingeJoint3D
-RigidBody3D

@@ -1,0 +1,46 @@
+[gd_scene load_steps=3 format=3 uid="uid://car5517ojgdqf"]
+
+[ext_resource type="Script" uid="uid://bixuxnwhd68ft" path="res://Scripts/PlantSelectionMenu.gd" id="1_5tf8c"]
+[ext_resource type="Texture2D" uid="uid://lq7ej8olj1cs" path="res://UI/close.svg" id="2_lfoqx"]
+
+[node name="PlantSelectionMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5tf8c")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(450, 450)
+layout_mode = 0
+offset_top = 130.0
+offset_right = 450.0
+offset_bottom = 580.0
+theme_override_constants/separation = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Plants Menu"
+horizontal_alignment = 1
+
+[node name="CloseButton" type="TextureButton" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_lfoqx")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 3
