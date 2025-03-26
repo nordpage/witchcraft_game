@@ -23,3 +23,6 @@ res://PlantSelectionMenu.tscn
 res://Scripts/soil.gd
 res://main.gd
 res://Scripts/ResourceManager.gd
+res://Scripts/LadderArea.gd
+res://Scripts/plant_button.gd
+res://UI/PlantButton.tscn

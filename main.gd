@@ -55,23 +55,34 @@ func _input(event):
 func switch_to_witch():
 	var witch = $WitchPlayer
 	var spawn_point = $CART/WitchSpawnPoint
+	var cart = $CART
 
 	# Перемещаем ведьму в точку, только если она не активна
 	if GameState.current_mode != GameState.Mode.WALKING:
 		witch.global_transform.origin = spawn_point.global_transform.origin
 		witch.global_transform.basis = spawn_point.global_transform.basis
 
-	witch.visible = true
-	witch.get_node("WitchCameraPivot/WitchCamera").current = true
-
-	$CART.set_physics_process(false)
-	$CART/CartCamera.current = false
-	for child in $CART.get_children():
+	# Сначала полностью деактивируем физику тележки
+	cart.freeze = true
+	cart.engine_force = 0
+	cart.brake = 100 # Включаем тормоза
+	cart.linear_velocity = Vector3.ZERO
+	cart.angular_velocity = Vector3.ZERO
+	cart.set_physics_process(false)
+	
+	# Затем отключаем колеса
+	for child in cart.get_children():
 		if child is VehicleWheel3D:
 			child.use_as_traction = false
 			child.use_as_steering = false
 
+	# Только после этого активируем ведьму
+	witch.visible = true
+	witch.get_node("WitchCameraPivot/WitchCamera").current = true
+	cart.get_node("CartCamera").current = false
+
 	GameState.current_mode = GameState.Mode.WALKING
+	print("Switched to WALKING mode")
 
 func fade_switch_to_witch():
 	fade_out()
@@ -88,15 +99,31 @@ func fade_switch_to_cart():
 
 func switch_to_cart():
 	var witch = $WitchPlayer
+	var cart = $CART
+	
+	# Скрываем ведьму
 	witch.visible = false
-	$CART/CartCamera.current = true
-	$CART.set_physics_process(true)
-	for child in $CART.get_children():
+	
+	# Сначала активируем камеру тележки
+	cart.get_node("CartCamera").current = true
+	
+	# Затем настраиваем колеса
+	for child in cart.get_children():
 		if child is VehicleWheel3D:
 			child.use_as_traction = true
 			child.use_as_steering = (child.name.contains("Front"))
+	
+	# Затем аккуратно активируем физику
+	cart.freeze = false
+	cart.set_physics_process(true)
+	cart.brake = 0 # Отпускаем тормоза
+	
+	# Устанавливаем начальную скорость в ноль для уверенности
+	cart.linear_velocity = Vector3.ZERO
+	cart.angular_velocity = Vector3.ZERO
 
 	GameState.current_mode = GameState.Mode.DRIVING
+	print("Switched to DRIVING mode")
 
 
 # Called when the node enters the scene tree for the first time.
