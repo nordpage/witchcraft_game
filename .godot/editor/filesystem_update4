@@ -1,4 +1,4 @@
-res://main_scene.tscn
+res://UI/PlantButton.tscn
 res://addons/GDBeautifier/default_shortcut.tres
 res://addons/RadialMenu/dark_default_theme.tres
 res://models/plants/plant1/plant1.tres
@@ -10,19 +10,4 @@ res://materials/Gold/Gold.tres
 res://HTerrainWet.gdshader
 res://addons/RadialMenu/light_default_theme.tres
 res://highlight_shader.gdshader
-res://Scripts/door.gd
-res://day_night_cycle.tscn
-res://weather_controller.tscn
-res://rain_particles.tscn
-res://plant_scene.tscn
-res://CartScene.tscn
-res://Plants/Petunia.tscn
-res://Characters/witch_player.tscn
-res://Scripts/PlantSelectionMenu.gd
-res://PlantSelectionMenu.tscn
-res://Scripts/soil.gd
-res://main.gd
-res://Scripts/ResourceManager.gd
-res://Scripts/LadderArea.gd
-res://Scripts/plant_button.gd
-res://UI/PlantButton.tscn
+res://Scripts/SoilData.gd

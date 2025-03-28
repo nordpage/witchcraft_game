@@ -28,7 +28,13 @@ func setup(id: String, data: Dictionary):
 		no_seeds_overlay.visible = false
 
 func _ready():
+	print("Button ready:", plant_id)
 	connect("pressed", Callable(self, "_on_button_pressed"))
+	connect("mouse_entered", Callable(self, "_on_mouse_entered"))
+
+func _on_mouse_entered():
+	print("Mouse entered:", plant_id)
+
 
 func _on_button_pressed():
 	emit_signal("plant_selected", plant_id)
