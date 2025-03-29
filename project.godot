@@ -85,7 +85,7 @@ GameState="*res://Scripts/GameState.gd"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/GDBeautifier/plugin.cfg", "res://addons/RadialMenu/plugin.cfg", "res://addons/claude_3.5_sonnet_chat_api/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/mixamo_animation_retargeter/plugin.cfg", "res://addons/zylann.hterrain/plugin.cfg")
+enabled=PackedStringArray("res://addons/GDBeautifier/plugin.cfg", "res://addons/RadialMenu/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/mixamo_animation_retargeter/plugin.cfg", "res://addons/zylann.hterrain/plugin.cfg")
 
 [input]
 
@@ -128,7 +128,3 @@ interact={
 [physics]
 
 common/physics_ticks_per_second=120
-
-[plugins]
-
-claude_api/api_key=""

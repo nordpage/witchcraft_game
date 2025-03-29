@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://bjjr4q8yyxg45"]
+
+[ext_resource type="ArrayMesh" uid="uid://3w24bm0jslhn" path="res://Plants/PurpleRebel/PurpleRebel_1.tres" id="1_gw525"]
+[ext_resource type="ArrayMesh" uid="uid://duy0v8b2g3vd" path="res://Plants/PurpleRebel/PurpleRebel_2.tres" id="2_bvl1b"]
+[ext_resource type="ArrayMesh" uid="uid://disp45vnr37e1" path="res://Plants/PurpleRebel/PurpleRebel_3.tres" id="3_o3ek0"]
+[ext_resource type="ArrayMesh" uid="uid://brxiimj0pvxcg" path="res://Plants/PurpleRebel/PurpleRebel_4.tres" id="4_vej0p"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fd0b3"]
+
+[node name="PurpleRebel" type="Node3D"]
+
+[node name="Models" type="Node3D" parent="."]
+
+[node name="Stage1_Seedling" type="MeshInstance3D" parent="Models"]
+mesh = ExtResource("1_gw525")
+
+[node name="Stage2_Young" type="MeshInstance3D" parent="Models"]
+mesh = ExtResource("2_bvl1b")
+
+[node name="Stage3_Mature" type="MeshInstance3D" parent="Models"]
+mesh = ExtResource("3_o3ek0")
+
+[node name="Stage4_Flowering" type="MeshInstance3D" parent="Models"]
+mesh = ExtResource("4_vej0p")
+
+[node name="Effects" type="Node3D" parent="."]
+
+[node name="GrowthParticles" type="GPUParticles3D" parent="Effects"]
+
+[node name="IdleParticles" type="GPUParticles3D" parent="Effects"]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_fd0b3")

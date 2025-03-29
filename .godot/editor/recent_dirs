@@ -1,3 +1,10 @@
+res://Plants
+res://Plants/MermaidsTendrils
+res://Plants/WitchsThimbles
+res://Plants/CunningCabbage
+res://Plants/PurpleRebel
+res://Plants/TrollsGrin
+res://Plants/BlazingSplinter
 res://UI
 res://Scripts
 res://
@@ -13,10 +20,3 @@ res://textures_raw/Ground037_2K-JPG
 res://ter_data
 res://m_terr
 res://textures_raw/Rocks007_2K-JPG
-res://terrain_textures
-res://materials/glass
-res://models/plants/plant1
-res://materials/metal
-res://materials/roof
-res://materials/soil
-res://materials/outer

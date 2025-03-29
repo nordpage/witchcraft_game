@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://1btywyyhinkb"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_npif7"]
+
+[node name="CunningCabbage" type="Node3D"]
+
+[node name="Models" type="Node3D" parent="."]
+
+[node name="Stage1_Seedling" type="MeshInstance3D" parent="Models"]
+
+[node name="Stage2_Young" type="MeshInstance3D" parent="Models"]
+
+[node name="Stage3_Mature" type="MeshInstance3D" parent="Models"]
+
+[node name="Stage4_Flowering" type="MeshInstance3D" parent="Models"]
+
+[node name="Effects" type="Node3D" parent="."]
+
+[node name="GrowthParticles" type="GPUParticles3D" parent="Effects"]
+
+[node name="IdleParticles" type="GPUParticles3D" parent="Effects"]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_npif7")

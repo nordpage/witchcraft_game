@@ -1,3 +1,8 @@
+Node3D
+CollisionShape3D
+AnimationPlayer
+GPUParticles3D
+MeshInstance3D
 ColorRect
 Label
 HSeparator
@@ -7,8 +12,3 @@ Panel
 Button
 GridContainer
 ScrollContainer
-TextureButton
-HBoxContainer
-StaticBody3D
-Node3D
-CollisionShape3D

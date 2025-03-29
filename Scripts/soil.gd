@@ -5,39 +5,45 @@ signal soil_clicked(soil, position, soil_parameters)
 
 @export var soil_parameters: SoilData
 @export var plant_options: Dictionary = {
-	"drunken_petunia": {
-		"name": "Drunken Petunia",
-		"scene": preload("res://Plants/Petunia.tscn"),
+	"witchs_thimbles": {
+		"name_ru": "Ведьмины Наперстки",
+		"name_en": "Witch's Thimbles",
+		"scene": preload("res://Plants/WitchsThimbles.tscn"),
 		"growth_time": 5.0,
 		"growth_chance": 0.85
 	},
-	"rebel_basil": {
-		"name": "Rebel Basil",
-		"scene": preload("res://Plants/Basil.tscn"),
+	"purple_rebel": {
+		"name_ru": "Пурпурный Бунтарь",
+		"name_en": "Purple Rebel",
+		"scene": preload("res://Plants/PurpleRebel.tscn"),
 		"growth_time": 6.0,
 		"growth_chance": 0.8
 	},
-	"shadow_heather": {
-		"name": "Shadow Heather",
-		"scene": preload("res://Plants/Heather.tscn"),
+	"trolls_grin": {
+		"name_ru": "Ухмылка Тролля",
+		"name_en": "Troll's Grin",
+		"scene": preload("res://Plants/TrollsGrin.tscn"),
 		"growth_time": 7.0,
 		"growth_chance": 0.9
 	},
-	"lunatic_mint": {
-		"name": "Lunatic Mint",
-		"scene": preload("res://Plants/Mint.tscn"),
+	"blazing_splinter": {
+		"name_ru": "Пылающая Заноза",
+		"name_en": "Blazing Splinter",
+		"scene": preload("res://Plants/BlazingSplinter.tscn"),
 		"growth_time": 4.0,
 		"growth_chance": 0.88
 	},
-	"witches_thyme": {
-		"name": "Witches' Thyme",
-		"scene": preload("res://Plants/Thyme.tscn"),
+	"cunning_cabbage": {
+		"name_ru": "Хитрый Кочан",
+		"name_en": "Cunning Cabbage",
+		"scene": preload("res://Plants/CunningCabbage.tscn"),
 		"growth_time": 5.5,
 		"growth_chance": 0.82
 	},
-	"frostbite_fennel": {
-		"name": "Frostbite Fennel",
-		"scene": preload("res://Plants/Fennel.tscn"),
+	"mermaids_tendrils": {
+		"name_ru": "Щупальца Русалки",
+		"name_en": "Mermaid's Tendrils",
+		"scene": preload("res://Plants/MermaidsTendrils.tscn"),
 		"growth_time": 6.5,
 		"growth_chance": 0.77
 	}
