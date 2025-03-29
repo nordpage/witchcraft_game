@@ -1,6 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://bvps4qwba7p8j"]
+[gd_scene load_steps=11 format=3 uid="uid://bvps4qwba7p8j"]
 
 [ext_resource type="ArrayMesh" uid="uid://n8gp8lma2j8a" path="res://Plants/MermaidsTendrils/MermaidsTendrils_1.tres" id="1_3gyuv"]
+[ext_resource type="Script" uid="uid://d4d5g54daq68a" path="res://Plants/PlantScript.gd" id="1_5x6q2"]
 [ext_resource type="ArrayMesh" uid="uid://85f5xj763n8i" path="res://Plants/MermaidsTendrils/MermaidsTendrils_2.tres" id="2_5x6q2"]
 [ext_resource type="ArrayMesh" uid="uid://b04tjhifk0lf7" path="res://Plants/MermaidsTendrils/MermaidsTendrils_3.tres" id="3_eklue"]
 [ext_resource type="ArrayMesh" uid="uid://c8m4vq270lfb6" path="res://Plants/MermaidsTendrils/MermaidsTendrils_4.tres" id="4_2p4ic"]
@@ -16,19 +17,24 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_q4fd4"]
 
 [node name="MermaidsTendrils" type="Node3D"]
+script = ExtResource("1_5x6q2")
 
 [node name="Models" type="Node3D" parent="."]
 
 [node name="Stage1" type="MeshInstance3D" parent="Models"]
+visible = false
 mesh = ExtResource("1_3gyuv")
 
 [node name="Stage2" type="MeshInstance3D" parent="Models"]
+visible = false
 mesh = ExtResource("2_5x6q2")
 
 [node name="Stage3" type="MeshInstance3D" parent="Models"]
+visible = false
 mesh = ExtResource("3_eklue")
 
 [node name="Stage4" type="MeshInstance3D" parent="Models"]
+visible = false
 mesh = ExtResource("4_2p4ic")
 
 [node name="Effects" type="Node3D" parent="."]

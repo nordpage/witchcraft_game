@@ -31,6 +31,7 @@ resource_name = "Beta_HighLimbsGeoSG3"
 vertex_color_use_as_albedo = true
 albedo_color = Color(0.837638, 0.528975, 0.496618, 1)
 emission_enabled = true
+emission_intensity = 1000.0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_ymyjh"]
 resource_name = "Beta_Surface"
@@ -256,6 +257,7 @@ resource_name = "Beta_Joints_MAT1"
 vertex_color_use_as_albedo = true
 albedo_color = Color(0.553237, 0.348555, 0.314857, 1)
 emission_enabled = true
+emission_intensity = 1000.0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_twtbk"]
 resource_name = "Beta_Joints"

@@ -14,6 +14,7 @@ vertex_color_use_as_albedo = true
 albedo_texture = ExtResource("2_jy5uj")
 metallic = 1.0
 roughness = 0.858579
+emission_intensity = 1000.0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_kia3k"]
 _surfaces = [{
@@ -84,10 +85,12 @@ mesh = ExtResource("5_wkel2")
 [node name="Effects" type="Node3D" parent="."]
 
 [node name="GrowthParticles" type="GPUParticles3D" parent="Effects"]
+visible = false
 process_material = SubResource("ParticleProcessMaterial_3rhic")
 draw_pass_1 = SubResource("QuadMesh_jy5uj")
 
 [node name="IdleParticles" type="GPUParticles3D" parent="Effects"]
+visible = false
 process_material = SubResource("ParticleProcessMaterial_827n7")
 draw_pass_1 = SubResource("QuadMesh_5f274")
 

@@ -1,7 +1,9 @@
-[gd_scene load_steps=22 format=4 uid="uid://gv10hs7flp7v"]
+[gd_scene load_steps=26 format=4 uid="uid://gv10hs7flp7v"]
 
+[ext_resource type="Script" uid="uid://d4d5g54daq68a" path="res://Plants/PlantScript.gd" id="1_rx41a"]
 [ext_resource type="Texture2D" uid="uid://dc4h1jr0qx7is" path="res://plant_raw/TrollsGrin_3_1_plant2_diff.png" id="1_t212b"]
 [ext_resource type="Texture2D" uid="uid://uk6vnft58kpm" path="res://plant_raw/TrollsGrin_4_1_plant2_diff.png" id="2_rx41a"]
+[ext_resource type="Texture2D" uid="uid://dto87tuv1vydo" path="res://UI/drop.png" id="4_6xh26"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_6xh26"]
 load_path = "res://.godot/imported/TrollsGrin_1_1_plant2_diff.png-f417a26b9ac8e460ff171b1541752803.s3tc.ctex"
@@ -14,6 +16,7 @@ vertex_color_use_as_albedo = true
 albedo_texture = SubResource("CompressedTexture2D_6xh26")
 metallic = 1.0
 roughness = 0.858579
+emission_intensity = 1000.0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_1fdr5"]
 _surfaces = [{
@@ -60,6 +63,7 @@ vertex_color_use_as_albedo = true
 albedo_texture = SubResource("CompressedTexture2D_pjnxj")
 metallic = 1.0
 roughness = 0.858579
+emission_intensity = 1000.0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_mqgy8"]
 _surfaces = [{
@@ -103,6 +107,7 @@ vertex_color_use_as_albedo = true
 albedo_texture = ExtResource("1_t212b")
 metallic = 1.0
 roughness = 0.858579
+emission_intensity = 1000.0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_667ro"]
 _surfaces = [{
@@ -146,6 +151,7 @@ vertex_color_use_as_albedo = true
 albedo_texture = ExtResource("2_rx41a")
 metallic = 1.0
 roughness = 0.858579
+emission_intensity = 1000.0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_h38ai"]
 _surfaces = [{
@@ -182,48 +188,101 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_h38ai")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_t212b"]
+emission_shape = 1
+emission_sphere_radius = 0.3
+direction = Vector3(0, 1, 0)
+initial_velocity_min = 0.5
+initial_velocity_max = 1.0
+gravity = Vector3(0, 0.1, 0)
+scale_min = 0.1
+scale_max = 0.25
+color = Color(0.333333, 0.8, 0.4, 1)
 
-[sub_resource type="QuadMesh" id="QuadMesh_rx41a"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pjnxj"]
+transparency = 1
+blend_mode = 1
+albedo_color = Color(0.3762, 0.897952, 0.451047, 1)
+emission_enabled = true
+emission = Color(0.333333, 0.8, 0.4, 1)
+emission_energy_multiplier = 0.6
+emission_intensity = 1000.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_0eifa"]
+material = SubResource("StandardMaterial3D_pjnxj")
+radius = 0.1
+height = 0.2
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_6xh26"]
+emission_shape = 1
+emission_sphere_radius = 0.2
+direction = Vector3(0, -1, 0)
+spread = 20.0
+initial_velocity_min = 0.05
+initial_velocity_max = 0.1
+gravity = Vector3(0, 0.1, 0)
+scale_min = 0.03
+scale_max = 0.08
+color = Color(0.266667, 0.666667, 0.333333, 1)
 
-[sub_resource type="QuadMesh" id="QuadMesh_pjnxj"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pdwyd"]
+transparency = 1
+blend_mode = 1
+albedo_color = Color(0.333333, 0.866667, 0.4, 1)
+albedo_texture = ExtResource("4_6xh26")
+roughness = 0.2
+emission_intensity = 1000.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_70fpj"]
+material = SubResource("StandardMaterial3D_pdwyd")
+radius = 0.06
+height = 0.12
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7a3td"]
 
 [node name="TrollsGrin" type="Node3D"]
+script = ExtResource("1_rx41a")
 
 [node name="Models" type="Node3D" parent="."]
 
 [node name="Stage1" type="MeshInstance3D" parent="Models"]
-transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, 0)
+transform = Transform3D(2.82843, 0, 2.82843, 0, 4, 0, -2.82843, 0, 2.82843, 0, 0, 0)
+visible = false
 mesh = SubResource("ArrayMesh_8hb8b")
 skeleton = NodePath("")
 
 [node name="Stage2" type="MeshInstance3D" parent="Models"]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.000829182, -0.00645131, -0.000712351)
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0.000829182, -0.00645131, -0.000712351)
+visible = false
 mesh = SubResource("ArrayMesh_lxwsf")
 skeleton = NodePath("")
 
 [node name="Stage3" type="MeshInstance3D" parent="Models"]
-transform = Transform3D(0.707107, 0, 0.707106, 0, 1, 0, -0.707106, 0, 0.707107, 0.00186243, -0.0133348, -0.0157866)
+transform = Transform3D(2.82843, 0, 2.82843, 0, 4, 0, -2.82843, 0, 2.82843, 0.00186243, -0.0133348, -0.0157866)
+visible = false
 mesh = SubResource("ArrayMesh_vrxpr")
 skeleton = NodePath("")
 
 [node name="Stage4" type="MeshInstance3D" parent="Models"]
-transform = Transform3D(0.409229, 0.0775535, -0.90913, -0.172831, 0.984932, 0.00622316, 0.895914, 0.154579, 0.416466, 0, 0, 0)
+transform = Transform3D(1.63692, 0.310214, -3.63652, -0.691324, 3.93973, 0.0248922, 3.58365, 0.618316, 1.66586, 0, 0, 0)
+visible = false
 mesh = SubResource("ArrayMesh_cu7m7")
 skeleton = NodePath("")
 
 [node name="Effects" type="Node3D" parent="."]
 
 [node name="GrowthParticles" type="GPUParticles3D" parent="Effects"]
+emitting = false
+amount = 25
+lifetime = 3.0
+one_shot = true
+explosiveness = 0.7
 process_material = SubResource("ParticleProcessMaterial_t212b")
-draw_pass_1 = SubResource("QuadMesh_rx41a")
+draw_pass_1 = SubResource("SphereMesh_0eifa")
 
 [node name="IdleParticles" type="GPUParticles3D" parent="Effects"]
+lifetime = 4.0
 process_material = SubResource("ParticleProcessMaterial_6xh26")
-draw_pass_1 = SubResource("QuadMesh_pjnxj")
+draw_pass_1 = SubResource("SphereMesh_70fpj")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 

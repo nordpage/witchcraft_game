@@ -1,5 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://1btywyyhinkb"]
+[gd_scene load_steps=11 format=3 uid="uid://1btywyyhinkb"]
 
+[ext_resource type="Script" uid="uid://d4d5g54daq68a" path="res://Plants/PlantScript.gd" id="1_df5ki"]
 [ext_resource type="ArrayMesh" uid="uid://dahi16sb8dkdv" path="res://Plants/CunningCabbage/CunningCabbage_1.tres" id="1_qflde"]
 [ext_resource type="ArrayMesh" uid="uid://cfvn10hht8m3x" path="res://Plants/CunningCabbage/CunningCabbage_2.tres" id="2_df5ki"]
 [ext_resource type="ArrayMesh" uid="uid://d0i3ye86onf4j" path="res://Plants/CunningCabbage/CunningCabbage_3.tres" id="3_bxour"]
@@ -16,19 +17,24 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_npif7"]
 
 [node name="CunningCabbage" type="Node3D"]
+script = ExtResource("1_df5ki")
 
 [node name="Models" type="Node3D" parent="."]
 
 [node name="Stage1" type="MeshInstance3D" parent="Models"]
+visible = false
 mesh = ExtResource("1_qflde")
 
 [node name="Stage2" type="MeshInstance3D" parent="Models"]
+visible = false
 mesh = ExtResource("2_df5ki")
 
 [node name="Stage3" type="MeshInstance3D" parent="Models"]
+visible = false
 mesh = ExtResource("3_bxour")
 
 [node name="Stage4" type="MeshInstance3D" parent="Models"]
+visible = false
 mesh = ExtResource("4_aih0p")
 
 [node name="Effects" type="Node3D" parent="."]

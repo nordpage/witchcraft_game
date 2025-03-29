@@ -1,43 +1,112 @@
-[gd_scene load_steps=10 format=3 uid="uid://ddsf8dpd8u3a1"]
+[gd_scene load_steps=17 format=3 uid="uid://ddsf8dpd8u3a1"]
 
+[ext_resource type="Script" uid="uid://d4d5g54daq68a" path="res://Plants/PlantScript.gd" id="1_k6gd2"]
 [ext_resource type="ArrayMesh" uid="uid://daxgblc2731tb" path="res://Plants/WitchsThimbles/WitchsThimbles_1.tres" id="1_mt35p"]
 [ext_resource type="ArrayMesh" uid="uid://dgs3gu07ew604" path="res://Plants/WitchsThimbles/WitchsThimbles_2.tres" id="2_k6gd2"]
 [ext_resource type="ArrayMesh" uid="uid://pojv2i87s7ar" path="res://Plants/WitchsThimbles/WitchsThimbles_3.tres" id="3_rhxx2"]
 [ext_resource type="ArrayMesh" uid="uid://dnwtfhgmim10u" path="res://Plants/WitchsThimbles/WitchsThimbles_4.tres" id="4_71c4w"]
+[ext_resource type="Texture2D" uid="uid://hqsrm1yrmbmr" path="res://UI/Star_1.png" id="6_71c4w"]
+[ext_resource type="Texture2D" uid="uid://djbrrim0aews" path="res://UI/Ellipse 1.png" id="7_pmxan"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_mt35p"]
+emission_shape_scale = Vector3(0.2, 0.2, 0.2)
+emission_shape = 1
+emission_sphere_radius = 1.0
+direction = Vector3(0, 1, 0)
+spread = 30.0
+initial_velocity_min = 1.0
+initial_velocity_max = 2.0
+gravity = Vector3(-0.1, 0.5, 0)
+color = Color(0.6, 0.4, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1ntky"]
+transparency = 1
+blend_mode = 1
+albedo_texture = ExtResource("6_71c4w")
+emission_enabled = true
+emission = Color(0.6, 0.4, 1, 1)
+emission_energy_multiplier = 1.2
+emission_intensity = 1000.0
+billboard_mode = 1
 
 [sub_resource type="QuadMesh" id="QuadMesh_k6gd2"]
+material = SubResource("StandardMaterial3D_1ntky")
+size = Vector2(0.1, 0.1)
+
+[sub_resource type="Gradient" id="Gradient_cr73s"]
+offsets = PackedFloat32Array(0, 0.53373, 1)
+colors = PackedColorArray(0.74902, 0.631373, 1, 0, 0.74902, 0.631373, 1, 0.529412, 0.74902, 0.631373, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_qoteo"]
+gradient = SubResource("Gradient_cr73s")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rhxx2"]
+emission_shape_scale = Vector3(0.25, 0.25, 0.25)
+emission_shape = 1
+emission_sphere_radius = 1.0
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 0.03
+initial_velocity_max = 0.08
+gravity = Vector3(0, -0.01, 0)
+color = Color(0.74902, 0.631373, 1, 1)
+color_ramp = SubResource("GradientTexture1D_qoteo")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lwua8"]
+transparency = 1
+blend_mode = 1
+albedo_texture = ExtResource("7_pmxan")
+emission_enabled = true
+emission = Color(0.74902, 0.631373, 1, 1)
+emission_energy_multiplier = 0.8
+emission_intensity = 1000.0
+billboard_mode = 1
 
 [sub_resource type="QuadMesh" id="QuadMesh_71c4w"]
+material = SubResource("StandardMaterial3D_lwua8")
+size = Vector2(0.06, 0.06)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_dfm66"]
 
 [node name="WitchsThimbles" type="Node3D"]
+script = ExtResource("1_k6gd2")
 
 [node name="Models" type="Node3D" parent="."]
 
 [node name="Stage1" type="MeshInstance3D" parent="Models"]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
+visible = false
 mesh = ExtResource("1_mt35p")
 
 [node name="Stage2" type="MeshInstance3D" parent="Models"]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
+visible = false
 mesh = ExtResource("2_k6gd2")
 
 [node name="Stage3" type="MeshInstance3D" parent="Models"]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
+visible = false
 mesh = ExtResource("3_rhxx2")
 
 [node name="Stage4" type="MeshInstance3D" parent="Models"]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
+visible = false
 mesh = ExtResource("4_71c4w")
 
 [node name="Effects" type="Node3D" parent="."]
 
 [node name="GrowthParticles" type="GPUParticles3D" parent="Effects"]
+emitting = false
+amount = 40
+lifetime = 2.0
+one_shot = true
+explosiveness = 0.8
 process_material = SubResource("ParticleProcessMaterial_mt35p")
 draw_pass_1 = SubResource("QuadMesh_k6gd2")
 
 [node name="IdleParticles" type="GPUParticles3D" parent="Effects"]
+amount = 15
+lifetime = 3.5
 process_material = SubResource("ParticleProcessMaterial_rhxx2")
 draw_pass_1 = SubResource("QuadMesh_71c4w")
 

@@ -1,21 +1,66 @@
-[gd_scene load_steps=10 format=3 uid="uid://bjjr4q8yyxg45"]
+[gd_scene load_steps=14 format=3 uid="uid://bjjr4q8yyxg45"]
 
+[ext_resource type="Script" uid="uid://d4d5g54daq68a" path="res://Plants/PlantScript.gd" id="1_bvl1b"]
 [ext_resource type="ArrayMesh" uid="uid://3w24bm0jslhn" path="res://Plants/PurpleRebel/PurpleRebel_1.tres" id="1_gw525"]
 [ext_resource type="ArrayMesh" uid="uid://duy0v8b2g3vd" path="res://Plants/PurpleRebel/PurpleRebel_2.tres" id="2_bvl1b"]
 [ext_resource type="ArrayMesh" uid="uid://disp45vnr37e1" path="res://Plants/PurpleRebel/PurpleRebel_3.tres" id="3_o3ek0"]
 [ext_resource type="ArrayMesh" uid="uid://brxiimj0pvxcg" path="res://Plants/PurpleRebel/PurpleRebel_4.tres" id="4_vej0p"]
+[ext_resource type="Texture2D" uid="uid://dltg423l4h46i" path="res://UI/energy.png" id="6_o3ek0"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_gw525"]
+emission_shape = 3
+emission_box_extents = Vector3(0.3, 0.2, 0.3)
+direction = Vector3(0, 0.5, 0)
+spread = 60.0
+initial_velocity_min = 0.8
+initial_velocity_max = 1.5
+gravity = Vector3(0, 0, 0)
+scale_min = 0.03
+scale_max = 0.12
+color = Color(0.4, 0.2, 0.8, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vej0p"]
+transparency = 1
+blend_mode = 1
+albedo_texture = ExtResource("6_o3ek0")
+emission_enabled = true
+emission = Color(0.533333, 0.266667, 1, 1)
+emission_energy_multiplier = 1.5
+emission_intensity = 1000.0
+billboard_mode = 1
 
 [sub_resource type="QuadMesh" id="QuadMesh_bvl1b"]
+material = SubResource("StandardMaterial3D_vej0p")
+size = Vector2(0.1, 0.1)
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_o3ek0"]
+emission_shape_scale = Vector3(0.2, 0.1, 0.2)
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 0.03
+initial_velocity_max = 0.1
+gravity = Vector3(0, -0.02, 0)
+color = Color(0.466667, 0.266667, 0.8, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2jpon"]
+transparency = 1
+blend_mode = 1
+albedo_texture = ExtResource("6_o3ek0")
+emission_enabled = true
+emission = Color(0.466667, 0.266667, 0.8, 1)
+emission_intensity = 1000.0
+billboard_mode = 1
 
 [sub_resource type="QuadMesh" id="QuadMesh_vej0p"]
+material = SubResource("StandardMaterial3D_2jpon")
+size = Vector2(0.05, 0.05)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_fd0b3"]
 
 [node name="PurpleRebel" type="Node3D"]
+script = ExtResource("1_bvl1b")
 
 [node name="Models" type="Node3D" parent="."]
 
@@ -34,10 +79,17 @@ mesh = ExtResource("4_vej0p")
 [node name="Effects" type="Node3D" parent="."]
 
 [node name="GrowthParticles" type="GPUParticles3D" parent="Effects"]
+emitting = false
+amount = 35
+lifetime = 1.5
+one_shot = true
+explosiveness = 0.9
 process_material = SubResource("ParticleProcessMaterial_gw525")
 draw_pass_1 = SubResource("QuadMesh_bvl1b")
 
 [node name="IdleParticles" type="GPUParticles3D" parent="Effects"]
+amount = 12
+lifetime = 2.8
 process_material = SubResource("ParticleProcessMaterial_o3ek0")
 draw_pass_1 = SubResource("QuadMesh_vej0p")
 

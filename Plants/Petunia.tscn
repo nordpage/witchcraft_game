@@ -7,6 +7,7 @@ resource_name = "Seed"
 cull_mode = 2
 albedo_color = Color(0.906332, 0.906332, 0.906332, 1)
 roughness = 0.5
+emission_intensity = 1000.0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_8ac7k"]
 _surfaces = [{
