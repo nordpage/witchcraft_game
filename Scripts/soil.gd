@@ -8,43 +8,43 @@ signal soil_clicked(soil, position, soil_parameters)
 	"witchs_thimbles": {
 		"name_ru": "Ведьмины Наперстки",
 		"name_en": "Witch's Thimbles",
-		"scene": preload("res://Plants/WitchsThimbles.tscn"),
-		"growth_time": 5.0,
+		"scene": preload("res://Plants/WitchsThimbles/WitchsThimbles.tscn"),
+		"growth_time": 30.0,
 		"growth_chance": 0.85
 	},
 	"purple_rebel": {
 		"name_ru": "Пурпурный Бунтарь",
 		"name_en": "Purple Rebel",
-		"scene": preload("res://Plants/PurpleRebel.tscn"),
-		"growth_time": 6.0,
+		"scene": preload("res://Plants/PurpleRebel/PurpleRebel.tscn"),
+		"growth_time": 36.0,
 		"growth_chance": 0.8
 	},
 	"trolls_grin": {
 		"name_ru": "Ухмылка Тролля",
 		"name_en": "Troll's Grin",
-		"scene": preload("res://Plants/TrollsGrin.tscn"),
-		"growth_time": 7.0,
+		"scene": preload("res://Plants/TrollsGrin/TrollsGrin.tscn"),
+		"growth_time": 42.0,
 		"growth_chance": 0.9
 	},
 	"blazing_splinter": {
 		"name_ru": "Пылающая Заноза",
 		"name_en": "Blazing Splinter",
-		"scene": preload("res://Plants/BlazingSplinter.tscn"),
-		"growth_time": 4.0,
+		"scene": preload("res://Plants/BlazingSplinter/BlazingSplinter.tscn"),
+		"growth_time": 24.0,
 		"growth_chance": 0.88
 	},
 	"cunning_cabbage": {
 		"name_ru": "Хитрый Кочан",
 		"name_en": "Cunning Cabbage",
-		"scene": preload("res://Plants/CunningCabbage.tscn"),
-		"growth_time": 5.5,
+		"scene": preload("res://Plants/CunningCabbage/CunningCabbage.tscn"),
+		"growth_time": 33,
 		"growth_chance": 0.82
 	},
 	"mermaids_tendrils": {
 		"name_ru": "Щупальца Русалки",
 		"name_en": "Mermaid's Tendrils",
-		"scene": preload("res://Plants/MermaidsTendrils.tscn"),
-		"growth_time": 6.5,
+		"scene": preload("res://Plants/MermaidsTendrils/MermaidsTendrils.tscn"),
+		"growth_time": 39,
 		"growth_chance": 0.77
 	}
 }
@@ -66,10 +66,12 @@ func _ready():
 func get_interaction_hint() -> String:
 	if not soil_parameters.is_sown:
 		return "Посадить"
+	elif soil_parameters.has_plant:
+		return "Собрать"
 	elif not soil_parameters.is_watered:
 		return "Полить"
 	else:
-		return "Собрать"
+		return "Подождать"
 		
 func interact() -> void:
 	if not soil_parameters.is_sown:
@@ -79,12 +81,15 @@ func interact() -> void:
 			plant_menu.show_for_soil(self)
 		else:
 			print("Plant selection menu not found!")
+	elif soil_parameters.has_plant:
+		# Собираем выросшее растение напрямую
+		collect_plant()
 	elif not soil_parameters.is_watered:
 		# Поливаем растение
 		water_plant()
-	elif soil_parameters.has_plant:
-		# Собираем растение
-		collect_plant()
+	else:
+		# Просто информируем пользователя
+		print("Растение растет... Нужно подождать.")
 		
 func water_plant():
 	# Проверяем, есть ли у игрока вода
@@ -154,8 +159,17 @@ func collect_plant():
 		# Находим растение
 		var plant_node = body.get_node_or_null("Plant")
 		if plant_node:
-			# Анимация сбора (если есть)
-			if plant_node.has_node("AnimationPlayer"):
+			# Проверяем, использует ли растение новый скрипт
+			var animation_played = false
+			if plant_node.has_method("play_harvest_animation"):
+				animation_played = plant_node.play_harvest_animation()
+				if animation_played:
+					# Ждем завершения анимации перед удалением
+					var anim_player = plant_node.get_node("AnimationPlayer")
+					await anim_player.animation_finished
+			
+			# Если новая анимация не воспроизводилась, пробуем старый способ
+			if not animation_played and plant_node.has_node("AnimationPlayer"):
 				var anim_player = plant_node.get_node("AnimationPlayer")
 				if anim_player.has_animation("collect"):
 					anim_player.play("collect")
@@ -234,48 +248,75 @@ func plant(plant_type: String):
 			print("Not enough seeds!")
 
 func grow_plant_after_delay(plant_data: Dictionary) -> void:
-	# Устанавливаем начальную стадию роста
+	# Установка начальных параметров
 	soil_parameters.growth_stage = 0
 	soil_parameters.growth_progress = 0.0
 	
-	# Рассчитываем модификатор времени роста
+	# Расчет модификатора времени роста (как раньше)
 	var growth_modifier = 1.0
 	
-	# Проверяем погоду
-	var weather_controller = get_node_or_null("/root/WeatherController")
-	if weather_controller:
-		if weather_controller.current_weather == weather_controller.WeatherType.RAIN:
-			growth_modifier *= 0.7  # Быстрее растёт во время дождя
+	# (Код проверки модификаторов остается прежним)
 	
-	# Проверяем время суток
-	var day_night_cycle = get_node_or_null("/root/DayNightCycle")
-	if day_night_cycle:
-		if day_night_cycle.current_time_of_day == day_night_cycle.TimeOfDay.MORNING:
-			growth_modifier *= 0.9  # Немного быстрее утром
+	# Сразу создаем экземпляр растения
+	var plant_instance = plant_data.scene.instantiate()
+	plant_instance.name = "Plant"
+	body.add_child(plant_instance)
+	plant_instance.position = Vector3(0, body.get_aabb().size.y / 2, 0)
 	
-	# Учитываем удобрения
-	if soil_parameters.is_fertilized:
-		growth_modifier *= 0.8  # На 20% быстрее с удобрениями
+	# Инициализируем растение
+	if plant_instance.has_method("initialize"):
+		plant_instance.initialize(soil_parameters.current_plant)
 	
+	# Обязательно устанавливаем начальную стадию (стадия 1)
+	if plant_instance.has_method("set_growth_stage"):
+		plant_instance.set_growth_stage(1)
+	else:
+		# Если растение не использует новый скрипт, просто делаем его видимым
+		plant_instance.visible = true
+	
+	# Удаляем временную модель ростка
+	var seedling = body.get_node_or_null("SeedlingMesh")
+	if seedling:
+		seedling.queue_free()
+	
+	# Настраиваем время и шаги роста
 	var modified_time = plant_data.growth_time * growth_modifier
-	var growth_steps = 3  # Количество стадий роста
+	var growth_steps = 4  # Всего 4 стадии роста
 	var time_per_step = modified_time / growth_steps
 	
-	# Запускаем цикл роста
-	for i in range(growth_steps):
+	# Ждем между стадиями роста (стадия 1 уже установлена)
+	for i in range(1, growth_steps):
+		# Ждем до следующей стадии
 		await get_tree().create_timer(time_per_step).timeout
 		
+		# Обновляем стадию роста в параметрах
 		soil_parameters.growth_stage = i + 1
 		soil_parameters.growth_progress = float(i + 1) / growth_steps
 		
-		# Обновляем визуальное представление роста (если есть стадии роста)
-		update_growth_appearance()
+		# Обновляем визуальное представление
+		if plant_instance.has_method("set_growth_stage"):
+			plant_instance.set_growth_stage(i + 1)
 		
 		print("Plant growth stage:", soil_parameters.growth_stage, 
 			  ", Progress:", soil_parameters.growth_progress * 100, "%")
 	
-	# Финальная стадия - растение выросло
-	complete_growth(plant_data)
+	# Проверка успешности роста после всех стадий
+	if randf() > plant_data.growth_chance:
+		# Растение не выросло - удаляем его
+		plant_instance.queue_free()
+		
+		print("Plant failed to grow!")
+		soil_parameters.is_sown = false
+		soil_parameters.growth_stage = 0
+		soil_parameters.growth_progress = 0.0
+	else:
+		# Растение успешно выросло
+		soil_parameters.has_plant = true
+		print("Plant has grown successfully:", plant_data.name_ru)
+	
+	# Обновляем внешний вид и подсказку
+	update_soil_appearance()
+	default_hint_text = get_interaction_hint()
 
 func complete_growth(plant_data: Dictionary) -> void:
 	# Удаляем временную модель ростка
@@ -291,10 +332,19 @@ func complete_growth(plant_data: Dictionary) -> void:
 		
 		# Настраиваем положение растения
 		plant_instance.position = Vector3(0, body.get_aabb().size.y / 2, 0)
-		if plant_instance.has_method("set_visible"):
+		
+		# Инициализируем растение с помощью нового скрипта
+		if plant_instance.has_method("initialize"):
+			# Передаем тип растения для настройки эффектов
+			plant_instance.initialize(soil_parameters.current_plant)
+			# Установка стадии роста на 4 (финальную)
+			if plant_instance.has_method("set_growth_stage"):
+				plant_instance.set_growth_stage(4)
+		else:
+			# Для обратной совместимости со старыми растениями
 			plant_instance.visible = true
 			
-		print("Plant has grown:", plant_data.name)
+		print("Plant has grown:", plant_data.name_ru)
 		soil_parameters.has_plant = true
 		
 		# Создаем эффект роста

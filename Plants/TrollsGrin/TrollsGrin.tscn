@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=4 uid="uid://gv10hs7flp7v"]
+[gd_scene load_steps=22 format=4 uid="uid://gv10hs7flp7v"]
 
 [ext_resource type="Texture2D" uid="uid://dc4h1jr0qx7is" path="res://plant_raw/TrollsGrin_3_1_plant2_diff.png" id="1_t212b"]
 [ext_resource type="Texture2D" uid="uid://uk6vnft58kpm" path="res://plant_raw/TrollsGrin_4_1_plant2_diff.png" id="2_rx41a"]
@@ -181,28 +181,36 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_h38ai")
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_t212b"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_rx41a"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_6xh26"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_pjnxj"]
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_7a3td"]
 
 [node name="TrollsGrin" type="Node3D"]
 
 [node name="Models" type="Node3D" parent="."]
 
-[node name="Stage1_Seedling" type="MeshInstance3D" parent="Models"]
+[node name="Stage1" type="MeshInstance3D" parent="Models"]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, 0)
 mesh = SubResource("ArrayMesh_8hb8b")
 skeleton = NodePath("")
 
-[node name="Stage2_Young" type="MeshInstance3D" parent="Models"]
+[node name="Stage2" type="MeshInstance3D" parent="Models"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.000829182, -0.00645131, -0.000712351)
 mesh = SubResource("ArrayMesh_lxwsf")
 skeleton = NodePath("")
 
-[node name="Stage3_Mature" type="MeshInstance3D" parent="Models"]
+[node name="Stage3" type="MeshInstance3D" parent="Models"]
 transform = Transform3D(0.707107, 0, 0.707106, 0, 1, 0, -0.707106, 0, 0.707107, 0.00186243, -0.0133348, -0.0157866)
 mesh = SubResource("ArrayMesh_vrxpr")
 skeleton = NodePath("")
 
-[node name="Stage4_Flowering" type="MeshInstance3D" parent="Models"]
+[node name="Stage4" type="MeshInstance3D" parent="Models"]
 transform = Transform3D(0.409229, 0.0775535, -0.90913, -0.172831, 0.984932, 0.00622316, 0.895914, 0.154579, 0.416466, 0, 0, 0)
 mesh = SubResource("ArrayMesh_cu7m7")
 skeleton = NodePath("")
@@ -210,8 +218,12 @@ skeleton = NodePath("")
 [node name="Effects" type="Node3D" parent="."]
 
 [node name="GrowthParticles" type="GPUParticles3D" parent="Effects"]
+process_material = SubResource("ParticleProcessMaterial_t212b")
+draw_pass_1 = SubResource("QuadMesh_rx41a")
 
 [node name="IdleParticles" type="GPUParticles3D" parent="Effects"]
+process_material = SubResource("ParticleProcessMaterial_6xh26")
+draw_pass_1 = SubResource("QuadMesh_pjnxj")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 

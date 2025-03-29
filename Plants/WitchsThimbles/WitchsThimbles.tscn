@@ -1,9 +1,17 @@
-[gd_scene load_steps=6 format=3 uid="uid://ddsf8dpd8u3a1"]
+[gd_scene load_steps=10 format=3 uid="uid://ddsf8dpd8u3a1"]
 
 [ext_resource type="ArrayMesh" uid="uid://daxgblc2731tb" path="res://Plants/WitchsThimbles/WitchsThimbles_1.tres" id="1_mt35p"]
 [ext_resource type="ArrayMesh" uid="uid://dgs3gu07ew604" path="res://Plants/WitchsThimbles/WitchsThimbles_2.tres" id="2_k6gd2"]
 [ext_resource type="ArrayMesh" uid="uid://pojv2i87s7ar" path="res://Plants/WitchsThimbles/WitchsThimbles_3.tres" id="3_rhxx2"]
 [ext_resource type="ArrayMesh" uid="uid://dnwtfhgmim10u" path="res://Plants/WitchsThimbles/WitchsThimbles_4.tres" id="4_71c4w"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_mt35p"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_k6gd2"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rhxx2"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_71c4w"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_dfm66"]
 
@@ -11,23 +19,27 @@
 
 [node name="Models" type="Node3D" parent="."]
 
-[node name="Stage1_Seedling" type="MeshInstance3D" parent="Models"]
+[node name="Stage1" type="MeshInstance3D" parent="Models"]
 mesh = ExtResource("1_mt35p")
 
-[node name="Stage2_Young" type="MeshInstance3D" parent="Models"]
+[node name="Stage2" type="MeshInstance3D" parent="Models"]
 mesh = ExtResource("2_k6gd2")
 
-[node name="Stage3_Mature" type="MeshInstance3D" parent="Models"]
+[node name="Stage3" type="MeshInstance3D" parent="Models"]
 mesh = ExtResource("3_rhxx2")
 
-[node name="Stage4_Flowering" type="MeshInstance3D" parent="Models"]
+[node name="Stage4" type="MeshInstance3D" parent="Models"]
 mesh = ExtResource("4_71c4w")
 
 [node name="Effects" type="Node3D" parent="."]
 
 [node name="GrowthParticles" type="GPUParticles3D" parent="Effects"]
+process_material = SubResource("ParticleProcessMaterial_mt35p")
+draw_pass_1 = SubResource("QuadMesh_k6gd2")
 
 [node name="IdleParticles" type="GPUParticles3D" parent="Effects"]
+process_material = SubResource("ParticleProcessMaterial_rhxx2")
+draw_pass_1 = SubResource("QuadMesh_71c4w")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 

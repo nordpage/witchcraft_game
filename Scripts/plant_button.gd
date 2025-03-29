@@ -11,7 +11,7 @@ var plant_id = ""
 
 func setup(id: String, data: Dictionary):
 	plant_id = id
-	plant_name.text = data.name
+	plant_name.text = data.name_en
 	growth_info.text = "Growth: " + str(data.growth_time) + "s"
 	chance_info.text = "Chance: " + str(int(data.growth_chance * 100)) + "%"
 	

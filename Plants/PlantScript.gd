@@ -3,7 +3,7 @@ extends Node3D
 # Переменные для роста и идентификации
 var plant_type: String = ""
 var current_growth_stage: int = 0
-var max_growth_stages: int = 3
+var max_growth_stages: int = 4
 
 # Ссылки на узлы
 @onready var growth_particles = $Effects/GrowthParticles
@@ -42,6 +42,11 @@ func initialize(new_plant_type: String):
 
 # Настройка частиц роста
 func setup_growth_particles():
+	# Проверяем, существует ли материал частиц
+	if not growth_particles.process_material:
+		var material = ParticleProcessMaterial.new()
+		growth_particles.process_material = material
+		
 	# Получаем материал частиц
 	var material = growth_particles.process_material
 	
@@ -87,6 +92,11 @@ func setup_growth_particles():
 
 # Настройка постоянных частиц
 func setup_idle_particles():
+	# Проверяем, существует ли материал частиц
+	if not idle_particles.process_material:
+		var material = ParticleProcessMaterial.new()
+		idle_particles.process_material = material
+
 	# Отключаем на старте, включим когда растение вырастет
 	idle_particles.emitting = false
 	
@@ -131,7 +141,9 @@ func setup_idle_particles():
 			var material = idle_particles.process_material
 			if material is ParticleProcessMaterial:
 				material.gravity = Vector3(0, 0.2, 0)
-				material.damping = 0.1
+				# Заменяем material.damping на правильное свойство
+				material.damping_min = 0.1  # Минимальное затухание
+				material.damping_max = 0.3  # Максимальное затухание
 				material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
 				material.emission_sphere_radius = 0.3
 			
@@ -177,59 +189,20 @@ func setup_idle_particles():
 	if material is ParticleProcessMaterial:
 		match plant_type:
 			"witchs_thimbles":
-				material.color_ramp = create_color_ramp([
-					Color(0.5, 0.3, 0.9, 0.0),  # Начало - прозрачное
-					Color(0.6, 0.4, 1.0, 0.3),  # Середина - полупрозрачное
-					Color(0.7, 0.5, 1.0, 0.0)   # Конец - исчезает
-				])
+				material.color = Color(0.6, 0.4, 1.0, 0.3)
 			"purple_rebel":
-				material.color_ramp = create_color_ramp([
-					Color(0.3, 0.1, 0.8, 0.0),  
-					Color(0.4, 0.2, 0.9, 0.35),  
-					Color(0.5, 0.3, 0.7, 0.0)   
-				])
+				material.color = Color(0.4, 0.2, 0.9, 0.35)
 			"trolls_grin":
-				material.color_ramp = create_color_ramp([
-					Color(0.2, 0.7, 0.2, 0.0),  
-					Color(0.3, 0.8, 0.3, 0.4),  
-					Color(0.4, 0.6, 0.1, 0.0)   
-				])
+				material.color = Color(0.3, 0.8, 0.3, 0.4)
 			"blazing_splinter":
-				material.color_ramp = create_color_ramp([
-					Color(1.0, 0.5, 0.1, 0.0),  
-					Color(1.0, 0.7, 0.3, 0.4),  
-					Color(0.7, 0.3, 0.1, 0.0)   
-				])
+				material.color = Color(1.0, 0.7, 0.3, 0.4)
 			"cunning_cabbage":
-				material.color_ramp = create_color_ramp([
-					Color(0.2, 0.8, 0.3, 0.0),  
-					Color(0.3, 0.9, 0.4, 0.25),  
-					Color(0.1, 0.7, 0.2, 0.0)   
-				])
+				material.color = Color(0.3, 0.9, 0.4, 0.25)
 			"mermaids_tendrils":
-				material.color_ramp = create_color_ramp([
-					Color(0.1, 0.6, 0.8, 0.0),  
-					Color(0.2, 0.7, 0.9, 0.3),  
-					Color(0.1, 0.5, 0.7, 0.0)   
-				])
+				material.color = Color(0.2, 0.7, 0.9, 0.3)
 			_:
 				# Стандартный зеленый градиент для неизвестных типов
-				material.color_ramp = create_color_ramp([
-					Color(0.3, 0.7, 0.3, 0.0),  
-					Color(0.4, 0.8, 0.4, 0.2),  
-					Color(0.3, 0.7, 0.3, 0.0)   
-				])
-
-# Вспомогательный метод для создания градиента цвета
-func create_color_ramp(colors: Array) -> Gradient:
-	var gradient = Gradient.new()
-	var point_count = colors.size()
-	
-	for i in range(point_count):
-		var pos = float(i) / (point_count - 1)
-		gradient.add_point(pos, colors[i])
-	
-	return gradient
+				material.color = Color(0.4, 0.8, 0.4, 0.2)
 
 # Устанавливает стадию роста растения
 func set_growth_stage(stage: int):
@@ -282,7 +255,3 @@ func play_harvest_animation():
 		anim_player.play("collect")
 		return true
 	return false
-
-# Метод для совместимости с вашим существующим кодом
-func set_visible(is_visible: bool):
-	visible = is_visible
